@@ -273,16 +273,24 @@ def get_reference_points(file):
     points = np.loadtxt(file)
     return np.transpose(points)
 
-def plot_field_lines(surf, folder, color='k'):
+def get_field_lines(surf, folder):
     """
-    Plot 3d field lines.
+    Read field lines from file.
     surf: Which flux surface the plotted fiel line belong to.
     folder: Path to source files.
     """
     surf = readsav(folder + '/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_0%d.sav' % surf)
     line_f = np.array([surf['surface'][0][4], surf['surface'][0][5], surf['surface'][0][6]])
-    del surf
-    gc.collect()
+    return line_f
+
+def plot_field_lines(surf, folder, color='k'):
+    """
+    Plot 3d field lines.
+    surf: Which flux surface the plotted fiel line belong to.
+    folder: Path to source files.
+    color: Color of the plotted lines.
+    """
+    line_f = get_field_lines(surf, folder)
 
     plt.figure()
     plt.gca(projection='3d')
