@@ -273,7 +273,7 @@ def get_reference_points(file):
     points = np.loadtxt(file)
     return np.transpose(points)
 
-def plot_field_lines(surf, folder):
+def plot_field_lines(surf, folder, color='k'):
     """
     Plot 3d field lines.
     surf: Which flux surface the plotted fiel line belong to.
@@ -288,7 +288,7 @@ def plot_field_lines(surf, folder):
     plt.gca(projection='3d')
 
     for i in range(0, 360, 30):
-        plt.plot(line_f[0, i, :], line_f[1, i, :], line_f[2, i, :], 'k')
+        plt.plot(line_f[0, i, :], line_f[1, i, :], line_f[2, i, :], color=color)
     
 def plot_view(R0, theta0, z0, Rp, thetap, zp, color='r'):
     """
