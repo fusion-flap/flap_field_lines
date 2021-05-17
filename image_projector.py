@@ -10,7 +10,6 @@ to image coordinates for various fast cameras used in fusion devices.
 """
 
 import numpy as np
-import gc
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
