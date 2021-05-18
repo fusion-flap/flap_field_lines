@@ -253,7 +253,7 @@ def plot_calib_img(img, y0=115, y1=1051, x0=492, x1=1661, rotate=None, mirror=No
     """
     img = mpimg.imread(img)
     img = img[y0:y1, x0:x1, :]
-    fig = plt.figure()
+    plt.figure()
     extent = [0, 1279, 1023, 0]
     if rotate in {1, 2, 3}:
         img = ndimage.rotate(img, rotate*90)

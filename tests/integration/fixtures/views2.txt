@@ -1,0 +1,157 @@
+W7X-AEQ20
+W7X-AEQ21
+W7X-AEQ31
+W7X-AEQ40
+W7X-AEQ41
+W7X-AEQ50
+W7X-AEQ51
+!!!
+W7X-AEQ20
+shot: 20160308
+cam: edicam
+struct={R0:6.34811, z0:-0.649178, theta0:1.21099, Rp:6.21000, zp:0.810000, thetap:-0.0400000, l0:1.63000, gamma:3.14000, xoffset:-2.51000, yoffset:8.25000, half: -1, xmirror: 0, ymirror: 0, imsize: [1280,1024]}
+@
+#
+shot: 20160308deg90
+cam: edicam
+struct={R0:6.34811, z0:-0.649178, theta0:1.21099, Rp:6.21000, zp:0.810000, thetap:-0.0500000, l0:1.63000, gamma:1.56000, xoffset:5.69000, yoffset:1.37000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1280]}
+@
+#
+!!!
+W7X-AEQ21
+shot: 20150713
+cam: pixelfly
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.76000, l0:1.39000, gamma:1.93000, xoffset:-8.38000, yoffset:-0.590000, half: -1, xmirror: 0, ymirror: 0, imsize: [1392,1024]}
+@
+#
+shot: 20160217
+cam: phot
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.75000, l0:0.690000, gamma:3.07000, xoffset:-3.59000, yoffset:-3.20000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20160217deg90
+cam: phot
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.76000, l0:0.690000, gamma:1.49000, xoffset:-5.81000, yoffset:1.23000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20160223
+cam: phot
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.75000, l0:0.690000, gamma:3.20000, xoffset:-4.51000, yoffset:-4.28000, half: -1, xmirror: 0, ymirror: 0, imsize: [576,664]}
+@
+#
+shot: 20160224
+cam: phot
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.74000, l0:0.690000, gamma:3.19000, xoffset:-2.86000, yoffset:-3.31000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20160224deg90
+cam: phot
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.74000, l0:0.690000, gamma:1.60000, xoffset:-5.89000, yoffset:0.520000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20171107deg90
+cam: phot
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.72000, l0:0.450000, gamma:2.58000, xoffset:-3.95000, yoffset:-1.18000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20171114deg90
+cam: phot
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.72000, l0:0.450000, gamma:2.58000, xoffset:-3.94000, yoffset:-1.18000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20181018deg90
+cam: phot
+struct={R0:6.44669, z0:0.665888, theta0:1.28828, Rp:7.44000, zp:0.480000, thetap:2.72000, l0:0.470000, gamma:2.46000, xoffset:-4.40000, yoffset:-0.960000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+!!!
+W7X-AEQ31
+shot: 20160218
+cam: edicam
+struct={R0:6.44669, z0:0.665888, theta0:2.54492, Rp:7.44000, zp:0.480000, thetap:4.01000, l0:1.32000, gamma:3.27000, xoffset:-2.41000, yoffset:-6.53000, half: -1, xmirror: 0, ymirror: 0, imsize: [1280,1024]}
+@
+#
+shot: 20160218deg90
+cam: edicam
+struct={R0:6.44669, z0:0.665888, theta0:2.54492, Rp:7.44000, zp:0.480000, thetap:4.01000, l0:1.32000, gamma:1.70000, xoffset:-9.13000, yoffset:1.35000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1280]}
+@
+#
+shot: 20171109deg90
+cam: edicam
+struct={R0:6.44669, z0:0.665888, theta0:2.54492, Rp:7.44000, zp:0.480000, thetap:4.01000, l0:1.32000, gamma:1.70000, xoffset:-9.08000, yoffset:1.30000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1280]}
+@
+#
+!!!
+W7X-AEQ40
+shot: 20160225
+cam: edicam
+struct={R0:6.34894, z0:-0.644913, theta0:3.72416, Rp:6.32000, zp:0.720000, thetap:2.48000, l0:1.64000, gamma:0.230000, xoffset:-1.51000, yoffset:-8.30000, half: -1, xmirror: 0, ymirror: 0, imsize: [1280,1024]}
+@
+#
+shot: 20160225deg90
+cam: edicam
+struct={R0:6.34894, z0:-0.644913, theta0:3.72416, Rp:6.32000, zp:0.720000, thetap:2.48000, l0:1.64000, gamma:1.79000, xoffset:5.91000, yoffset:1.03000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1280]}
+@
+#
+!!!
+W7X-AEQ41
+shot: 20160308
+cam: edicam
+struct={R0:6.34720, z0:0.643984, theta0:3.81564, Rp:6.31000, zp:-0.560000, thetap:-1.15000, l0:1.56000, gamma:0.170000, xoffset:-2.95000, yoffset:8.00000, half: -1, xmirror: 0, ymirror: 0, imsize: [1280,1024]}
+@
+#
+shot: 20160308deg90
+cam: edicam
+struct={R0:6.34720, z0:0.643984, theta0:3.81564, Rp:6.31000, zp:-0.560000, thetap:-1.14000, l0:1.53000, gamma:1.74000, xoffset:-10.2500, yoffset:-0.320000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1280]}
+@
+#
+shot: 20171109deg90
+cam: phot
+struct={R0:6.34720, z0:0.643984, theta0:3.81564, Rp:6.31000, zp:-0.560000, thetap:-1.14000, l0:0.750000, gamma:1.90000, xoffset:-6.15000, yoffset:-1.10000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20171129deg90
+cam: phot
+struct={R0:6.34720, z0:0.643984, theta0:3.81564, Rp:6.31000, zp:-0.560000, thetap:-1.14000, l0:0.750000, gamma:1.37000, xoffset:-6.46000, yoffset:0.940000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20181018TESPEL
+cam: phot
+struct={R0:8.46809, z0:-0.439106, theta0:3.91541, Rp:5.55000, zp:0.320000, thetap:3.88000, l0:4.82000, gamma:2.09000, xoffset:3.15000, yoffset:-5.22000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+shot: 20181018deg90
+cam: phot
+struct={R0:6.34720, z0:0.643984, theta0:3.81564, Rp:6.31000, zp:-0.560000, thetap:-1.14000, l0:0.620000, gamma:1.29000, xoffset:-7.14000, yoffset:1.31000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
+!!!
+W7X-AEQ50
+shot: 20160308
+cam: edicam
+struct={R0:6.34459, z0:-0.643974, theta0:-1.30240, Rp:6.31000, zp:0.560000, thetap:3.72000, l0:1.63000, gamma:-2.24000, xoffset:-2.41000, yoffset:8.36000, half: -1, xmirror: 0, ymirror: 0, imsize: [1280,1024]}
+@
+#
+shot: 20160308deg90
+cam: edicam
+struct={R0:6.34459, z0:-0.643974, theta0:-1.30240, Rp:6.31000, zp:0.560000, thetap:3.72000, l0:1.62000, gamma:-3.82000, xoffset:5.72000, yoffset:1.28000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1280]}
+@
+#
+shot: 20171109deg90
+cam: edicam
+struct={R0:6.34459, z0:-0.643974, theta0:-1.30240, Rp:6.31000, zp:0.560000, thetap:3.72000, l0:1.62000, gamma:-3.82000, xoffset:5.54000, yoffset:1.34000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1280]}
+@
+#
+shot: 20180724deg90
+cam: edicam
+struct={R0:6.34459, z0:-0.643974, theta0:-1.30240, Rp:6.31000, zp:0.560000, thetap:3.72000, l0:1.22000, gamma:-3.81000, xoffset:2.98000, yoffset:0.340000, half: -1, xmirror: 0, ymirror: 0, imsize: [768,960]}
+@
+#
+!!!
+W7X-AEQ51
+shot: 20150713
+cam: pixelfly
+struct={R0:6.41221, z0:0.665888, theta0:-1.22500, Rp:5.00000, zp:0.480000, thetap:-0.240000, l0:2.20000, gamma:0.0300000, xoffset:-2.39000, yoffset:12.3700, half: -1, xmirror: 0, ymirror: 0, imsize: [1392,1024]}
+@
+#
+!!!
