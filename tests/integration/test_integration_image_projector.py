@@ -35,5 +35,34 @@ class TestOld(unittest.TestCase):
         cam = 'edicam'
         self.assertTrue(self.compare_points(view, shot, cam))
 
+    def test_aeq31(self):
+        view = 'aeq31'
+        shot = '20160218'
+        cam = 'edicam'
+        self.assertTrue(self.compare_points(view, shot, cam))
+
+    def test_aeq50(self):
+        view = 'aeq50'
+        shot = '20160308'
+        cam = 'edicam'
+        self.assertTrue(self.compare_points(view, shot, cam))
+
+    def test_aeq41(self):
+        view = 'aeq41'
+        shot = '20160308'
+        cam = 'edicam'
+        points = get_reference_points('tests/integration/fixtures/%s.dat' % view)
+        points_ref = get_reference_points('tests/integration/fixtures/%s_ref.dat' % view)
+        view = ImageProjector.from_file('W7X-%s' % view.upper(), shot, cam, self.file)
+        
+        #This view needs and extra 180 degree rotation to match the calib image.
+        view.update_projection(alpha=np.pi)
+
+        points = view.calc_pixel_coord(points)
+
+        self.assertTrue(np.allclose(points, points_ref))
+
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

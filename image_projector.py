@@ -248,6 +248,8 @@ def plot_calib_img(img, y0=115, y1=1051, x0=492, x1=1661, rotate=None, mirror=No
     Plots calib images with highlighted reference points.
     img: Path to image.
     y0, y1, x0, x1: Part of the picture to be plotted.
+        Aeq20 and aeq50 needs rotate=1, aeq31 and aeq41 rotate=3.
+        For aeq31 use y0=120, y1=1086, x0=627, x1=1834 insted of default.
     rotate: Number of 90° rotations.
     mirror: 1: mirror along vertical, 2: along horizontal axis.
     """
