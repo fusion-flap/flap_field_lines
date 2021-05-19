@@ -10,7 +10,6 @@ to image coordinates for various fast cameras used in fusion devices.
 """
 
 import numpy as np
-import gc
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -249,12 +248,14 @@ def plot_calib_img(img, y0=115, y1=1051, x0=492, x1=1661, rotate=None, mirror=No
     Plots calib images with highlighted reference points.
     img: Path to image.
     y0, y1, x0, x1: Part of the picture to be plotted.
+        Aeq20 and aeq50 needs rotate=1, aeq31 and aeq41 rotate=3.
+        For aeq31 use y0=120, y1=1086, x0=627, x1=1834 insted of default.
     rotate: Number of 90° rotations.
     mirror: 1: mirror along vertical, 2: along horizontal axis.
     """
     img = mpimg.imread(img)
     img = img[y0:y1, x0:x1, :]
-    fig = plt.figure()
+    plt.figure()
     extent = [0, 1279, 1023, 0]
     if rotate in {1, 2, 3}:
         img = ndimage.rotate(img, rotate*90)
@@ -268,27 +269,41 @@ def plot_calib_img(img, y0=115, y1=1051, x0=492, x1=1661, rotate=None, mirror=No
 
 def get_reference_points(file):
     """
-    Read rference points for calibration from file.
+    Read reference points for calibration from file.
     """
     points = np.loadtxt(file)
     return np.transpose(points)
 
-def plot_field_lines(surf, folder):
+def save_reference_points(file, points):
     """
-    Plot 3d field lines.
+    Save reference points to file.
+    """
+    np.savetxt(file, points.T, fmt='%.10f', delimiter='\t')
+
+def get_field_lines(surf, folder):
+    """
+    Read field lines from file.
     surf: Which flux surface the plotted fiel line belong to.
     folder: Path to source files.
     """
     surf = readsav(folder + '/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_0%d.sav' % surf)
     line_f = np.array([surf['surface'][0][4], surf['surface'][0][5], surf['surface'][0][6]])
-    del surf
-    gc.collect()
+    return line_f
+
+def plot_field_lines(surf, folder, color='k'):
+    """
+    Plot 3d field lines.
+    surf: Which flux surface the plotted fiel line belong to.
+    folder: Path to source files.
+    color: Color of the plotted lines.
+    """
+    line_f = get_field_lines(surf, folder)
 
     plt.figure()
     plt.gca(projection='3d')
 
     for i in range(0, 360, 30):
-        plt.plot(line_f[0, i, :], line_f[1, i, :], line_f[2, i, :], 'k')
+        plt.plot(line_f[0, i, :], line_f[1, i, :], line_f[2, i, :], color=color)
     
 def plot_view(R0, theta0, z0, Rp, thetap, zp, color='r'):
     """
