@@ -267,10 +267,16 @@ def plot_calib_img(img, y0=115, y1=1051, x0=492, x1=1661, rotate=None, mirror=No
 
 def get_reference_points(file):
     """
-    Read rference points for calibration from file.
+    Read reference points for calibration from file.
     """
     points = np.loadtxt(file)
     return np.transpose(points)
+
+def save_reference_points(file, points):
+    """
+    Save reference points to file.
+    """
+    np.savetxt(file, points.T, fmt='%.10f', delimiter='\t')
 
 def get_field_lines(surf, folder):
     """
