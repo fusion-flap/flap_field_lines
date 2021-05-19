@@ -135,7 +135,7 @@ class ImageProjector:
             self.__mirror = mirror
 
         self.__projector_matrix = enh * np.array([[np.cos(alpha), self.__mirror * np.sin(alpha)], 
-                                               [-np.sin(alpha), self.__mirror * np.cos(alpha)]]) @ np.array([base_0, base_1])
+                                                 [-np.sin(alpha), self.__mirror * np.cos(alpha)]]) @ np.array([base_0, base_1])
 
         self.__offset = self.__projector_matrix @ -self.__xp + np.array([[xoff], [yoff]])
 
@@ -151,8 +151,8 @@ class ImageProjector:
         ss = np.sin(alpha)
         tt = 1 - np.cos(alpha)
         R = np.array([[tt*a**2 + cc, tt*a*b - ss*c, tt*a*c + ss*b],
-                    [tt*a*b + ss*c, tt*b**2 + cc, tt*b*c - ss*a],
-                    [tt*a*c - ss*b, tt*b*c + ss*a, tt*c**2 + cc]])
+                      [tt*a*b + ss*c, tt*b**2 + cc, tt*b*c - ss*a],
+                      [tt*a*c - ss*b, tt*b*c + ss*a, tt*c**2 + cc]])
 
         base_0 = np.array([c, (b * c) / (a - 1), 1 + c**2 / (a - 1)])
         base_1 = np.cross(self.__norm, base_0)
