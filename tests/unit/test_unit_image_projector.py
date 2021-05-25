@@ -34,8 +34,11 @@ class TestAccessories(unittest.TestCase):
         self.assertAlmostEqual(np.linalg.norm(diff_v), float(v.T @ diff_v), msg="Vector is not properly directed.")
 
 class TestImageProjectorOld(unittest.TestCase):
-
-    def test_old_aeq20(self):
+    """
+    These unittest test the set_up_projection_old function by comparing its
+    results to known correct values.
+    """
+    def test_set_up_projection_old_aeq20(self):
         R0 = 6.34811
         z0 = -0.649178
         theta0 = 1.21099
@@ -54,7 +57,7 @@ class TestImageProjectorOld(unittest.TestCase):
         self.assertTrue(np.allclose(ref_O, offset))
         
     
-    def test_old_aeq31(self):
+    def test_set_up_projection_old_aeq31(self):
         R0 = 6.44669
         z0 = 0.665888
         theta0 = 2.54492
@@ -73,7 +76,7 @@ class TestImageProjectorOld(unittest.TestCase):
         self.assertTrue(np.allclose(ref_O, offset))
 
         
-    def test_old_aeq41(self):
+    def test_set_up_projection_old_aeq41(self):
         R0 = 6.34720
         z0 = 0.643984
         theta0 = 3.81564
@@ -91,7 +94,7 @@ class TestImageProjectorOld(unittest.TestCase):
         self.assertTrue(np.allclose(ref_M, matrix))
         self.assertTrue(np.allclose(ref_O, offset))
 
-    def test_old_aeq50(self):
+    def test_set_up_projection_old_aeq50(self):
         R0 = 6.34459
         z0 = -0.643974
         theta0 = -1.30240
@@ -111,8 +114,23 @@ class TestImageProjectorOld(unittest.TestCase):
 
 class TestImageProjector(unittest.TestCase):
 
-    def test_1(self):
-        self.assertTrue(False)
+    def test_set_up_projection(self):
+        R0 = 6.34459
+        z0 = -0.643974
+        theta0 = -1.30240
+        Rp = 6.31000
+        zp = 0.560000
+        thetap = 3.72000
+        l0 = 1.63000
+        gamma = -2.24000
+        xoffset = -2.41000
+        yoffset = 8.36000
+        ref_M = np.array([[0.55187711,  0.87145393,  1.2621013], [-0.30675626, -1.251502  ,  0.99827018]])
+        ref_O = np.array([[2.80529554], [1.86299051]])
+        view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, l0, gamma, xoffset, yoffset, old=False)
+        matrix, offset = view.view_parameters()
+        self.assertTrue(np.allclose(ref_M, matrix))
+        self.assertTrue(np.allclose(ref_O, offset))
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
