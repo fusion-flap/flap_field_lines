@@ -6,7 +6,6 @@ Created on Tue May 17 2021
 """
 
 import unittest
-from matplotlib.pyplot import get
 import numpy as np
 
 from flap_field_lines.image_projector import *
