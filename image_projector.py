@@ -62,7 +62,7 @@ class ImageProjector:
         self.__xp = rzt_2_xyz(Rp, thetap, zp)
 
         #Calculating the normal vector and constant of the image plane
-        self.__norm = np.transpose((self.__x0 - self.__xp) / np.linalg.norm(self.__x0 - self.__xp))[0]
+        self.__norm = np.squeeze(dir_vector(self.__x0, self.__xp))
         self.__d = -self.__norm @ self.__xp
 
         self.viewpoint = viewpoint
@@ -234,6 +234,9 @@ class ImageProjector:
         """
         points = self.project_points(points)
         return self.__projector_matrix @ points + self.__offset
+
+def dir_vector(x1, x2):
+    return (x1 - x2) / np.linalg.norm(x1 - x2)
 
 def rzt_2_xyz(r, theta, z):
     """
