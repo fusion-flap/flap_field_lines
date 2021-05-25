@@ -161,6 +161,12 @@ class ImageProjector:
 
         self.__offset = 190 * np.array([[yoff + 2.59155], [xoff + 5.18956]])
     
+    def view_parameters(self):
+        """
+        Return a copy of the projection parameters.
+        """
+        return np.copy(self.__projector_matrix), np.copy(self.__offset)
+
     def calculate_parameters(self, x1, y1, x2, y2, p1, p2, mirror=True):
         """
         This method calculates the enlargement, rotation and offset 
