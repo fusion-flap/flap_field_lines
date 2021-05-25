@@ -24,3 +24,11 @@ class TestAccessories(unittest.TestCase):
         self.assertEqual(np.linalg.norm(x), sqrt(r**2 + z**2), msg="Output length is wrong.")
         self.assertEqual(np.arctan(x[1] / x[0]), theta, msg="Output angle is wrong.")
 
+    def test_dir_vector(self):
+        x0 = np.array([[1.5], [-2.1], [3.4]])
+        x1 = np.array([[0.7], [-4.6], [3.2]])
+        diff_v = np.array([[0.8], [2.5], [0.2]])
+        v = dir_vector(x0, x1)
+        self.assertEqual(v.shape, (3, 1), msg="Output shape is wrong.")
+        self.assertAlmostEqual(np.linalg.norm(v), 1, msg="Vector is not properly normed.")
+        self.assertAlmostEqual(np.linalg.norm(diff_v), float(v.T @ diff_v), msg="Vector is not properly directed.")
