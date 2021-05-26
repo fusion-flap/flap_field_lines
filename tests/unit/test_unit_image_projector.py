@@ -5,6 +5,7 @@ Created on Tue May 25 2021
 @author: lordofbejgli
 """
 
+from os import XATTR_REPLACE
 import unittest
 import numpy as np
 from numpy.lib.scimath import sqrt
@@ -270,6 +271,74 @@ class TestImageProjector(unittest.TestCase):
         self.assertAlmostEqual(np.arccos(x1.T @ (x2 - offset) /  
                               (np.linalg.norm(x2 - offset) * np.linalg.norm(x1))),
                               alpha, msg="Rotation doesn't work properly.")
+
+class TestProjectionUpdate(unittest.TestCase):
+    """
+    This class tests te update_projection function. It uses the 
+    reference points for AEQ31.
+    """
+    def setUp(self):
+        points = get_reference_points('tests/integration/fixtures/aeq31.dat')
+        points_ref = get_reference_points('tests/integration/fixtures/aeq31_ref.dat')
+        
+        self.points = points[:, 0:2]
+        self.points_ref = points_ref[:, 0:2]
+        self.center = np.array([[511.5], [639.5]])
+        self.enh = 1.5
+        self.alpha = np.pi/3
+        self.offset = np.array([[100], [200]])
+
+    def test_update_projection_old(self):
+        """
+        This test checks if enhancement, rotation and translation works well.
+        """        
+        view = ImageProjector.from_file('W7X-AEQ31', '20160218', 'edicam', 
+                                        'tests/integration/fixtures/views2.txt')
+        
+        view.update_projection(self.enh, self.alpha, 
+                               self.offset[0, 0], self.offset[1, 0])
+        points_2 = view.calc_pixel_coord(self.points)
+
+        self.assertAlmostEqual(np.linalg.norm(points_2[:, 0] - points_2[:, 1]) / 
+                               np.linalg.norm(self.points_ref[:, 0] - 
+                                              self.points_ref[:, 1]), 
+                               self.enh, msg="Enlargement doesn't work properly.")
+        v1 = points_2[:, 0:1] - self.offset - self.center
+        v2 = self.points_ref[:, 0:1] - self.center
+        self.assertAlmostEqual(float(np.arccos(v1.T @ v2 / 
+                        (np.linalg.norm(v1) * np.linalg.norm(v2)))), 
+                        self.alpha, msg="Rotation doesn't work properly.")
+
+    def test_update_projection(self):
+        """
+        This test checks if enhancement, rotation and translation works well.
+        """        
+        R0 = 6.44669
+        z0 = 0.665888
+        theta0 = 2.54492
+        Rp = 7.44
+        zp = 0.48
+        thetap = 4.01
+        view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, old=False)
+
+        view.calculate_parameters(self.points_ref[0, 0], self.points_ref[1, 0],
+                                  self.points_ref[0, 1], self.points_ref[1, 1], 
+                                  self.points[:, 0:1], self.points[:, 1:2])
+        
+        view.update_projection(self.enh, self.alpha, 
+                               self.offset[0, 0], self.offset[1, 0])
+        points_2 = view.calc_pixel_coord(self.points)
+
+        self.assertAlmostEqual(np.linalg.norm(points_2[:, 0] - points_2[:, 1]) / 
+                               np.linalg.norm(self.points_ref[:, 0] - 
+                                              self.points_ref[:, 1]), 
+                               self.enh, msg="Enlargement doesn't work properly.")
+        v1 = points_2[:, 0:1] - self.offset - self.center
+        v2 = self.points_ref[:, 0:1] - self.center
+        self.assertAlmostEqual(float(np.arccos(v1.T @ v2 / 
+                        (np.linalg.norm(v1) * np.linalg.norm(v2)))), 
+                        self.alpha, msg="Rotation doesn't work properly.")
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
