@@ -11,7 +11,10 @@ import numpy as np
 from flap_field_lines.image_projector import *
 
 class TestOld(unittest.TestCase):
-    
+    """
+    This class of tests checks wether the legacy mode projects the reference 
+    points of each camera view to the correct values.
+    """
     def setUp(self):
         self.file='tests/integration/fixtures/views2.txt'
 
@@ -62,7 +65,11 @@ class TestOld(unittest.TestCase):
         self.assertTrue(np.allclose(points, points_ref))
 
 class TestNew(unittest.TestCase):
-
+    """
+    This class of tests checks wether the acquiring of the projection 
+    parameters and the projection itself is done correctly on for each
+    camera view.
+    """
     def compare_points(self, R0, theta0, z0, Rp, thetap, zp, view):
         """
         Helper function. Compares the projected coordinates 
