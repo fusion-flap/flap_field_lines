@@ -49,7 +49,7 @@ class TestImageProjectorOld(unittest.TestCase):
         gamma = 3.14000
         xoffset = -2.51000
         yoffset = 8.25000
-        ref_M = np.array([[-255.80189788, -171.61517908,  -32.05790618], [59.8712411 ,  -32.81234059, -302.0809077]])
+        ref_M = np.array([[-255.80189788, -171.61517908, -32.05790618], [59.8712411, -32.81234059, -302.0809077]])
         ref_O = np.array([[2059.8945], [509.1164]])
         view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, l0, gamma, xoffset, yoffset)
         matrix, offset = view.view_parameters()
@@ -68,7 +68,7 @@ class TestImageProjectorOld(unittest.TestCase):
         gamma = 3.27000
         xoffset = -2.41000
         yoffset = -6.53000
-        ref_M = np.array([[-248.92937168,  -13.53482756,  -27.41562252], [27.09639828,    6.5141635 , -249.24684727]])
+        ref_M = np.array([[-248.92937168, -13.53482756, -27.41562252], [27.09639828, 6.5141635, -249.24684727]])
         ref_O = np.array([[-748.3055], [528.1164]])
         view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, l0, gamma, xoffset, yoffset)
         matrix, offset = view.view_parameters()
@@ -87,7 +87,7 @@ class TestImageProjectorOld(unittest.TestCase):
         gamma = 0.170000
         xoffset = -2.95000
         yoffset = 8.00000
-        ref_M = np.array([[74.68264825, 283.39567647,  44.29844928], [33.3574145 , -54.04568694, 289.51564141]])
+        ref_M = np.array([[74.68264825, 283.39567647, 44.29844928], [33.3574145, -54.04568694, 289.51564141]])
         ref_O = np.array([[2012.3945], [425.5164]])
         view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, l0, gamma, xoffset, yoffset)
         matrix, offset = view.view_parameters()
@@ -105,7 +105,7 @@ class TestImageProjectorOld(unittest.TestCase):
         gamma = -2.24000
         xoffset = -2.41000
         yoffset = 8.36000
-        ref_M = np.array([[106.53871141,  289.68105731,  -25.46523136], [-55.14896823,   -6.50117809, -304.68084283]])
+        ref_M = np.array([[106.53871141, 289.68105731, -25.46523136], [-55.14896823, -6.50117809, -304.68084283]])
         ref_O = np.array([[2080.7945], [528.1164]])
         view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, l0, gamma, xoffset, yoffset)
         matrix, offset = view.view_parameters()
@@ -115,6 +115,12 @@ class TestImageProjectorOld(unittest.TestCase):
 class TestImageProjector(unittest.TestCase):
 
     def test_set_up_projection(self):
+        view = ImageProjector(old=False)
+        ref_M = np.array([[0, 1, 0], [0, 0, -1]])
+        ref_O = np.array([[0], [0]])
+        matrix, offset = view.view_parameters()
+        self.assertTrue(np.allclose(ref_M, matrix))
+        self.assertTrue(np.allclose(ref_O, offset))
         R0 = 6.34459
         z0 = -0.643974
         theta0 = -1.30240
@@ -125,12 +131,32 @@ class TestImageProjector(unittest.TestCase):
         gamma = -2.24000
         xoffset = -2.41000
         yoffset = 8.36000
-        ref_M = np.array([[0.55187711,  0.87145393,  1.2621013], [-0.30675626, -1.251502  ,  0.99827018]])
+        ref_M = np.array([[0.55187711, 0.87145393, 1.2621013], [-0.30675626, -1.251502, 0.99827018]])
         ref_O = np.array([[2.80529554], [1.86299051]])
         view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, l0, gamma, xoffset, yoffset, old=False)
         matrix, offset = view.view_parameters()
         self.assertTrue(np.allclose(ref_M, matrix))
         self.assertTrue(np.allclose(ref_O, offset))
+
+    def test_project_points(self):
+        R0 = 6.31
+        z0 = 0.57
+        theta0 = -np.pi / 3
+        Rp = 6.274
+        zp = 0.023
+        thetap = 5 * np.pi / 12
+        x0 = rzt_2_xyz(R0, theta0, z0)
+        xp = rzt_2_xyz(Rp, thetap, zp)
+
+        x = np.array([[2.74], [4.13], [0.234]])
+
+        view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, old=False)
+        x_pro = view.project_points(x)
+
+        self.assertTrue(np.allclose(xp, view.project_points(xp)))
+        self.assertTrue(np.allclose(dir_vector(x, x0), dir_vector(x_pro, x)))
+        self.assertAlmostEqual(float(dir_vector(xp, x0).T @ dir_vector(x_pro, xp)), 0)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
