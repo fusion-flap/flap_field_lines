@@ -213,7 +213,7 @@ class ImageProjector:
         to the center of the image.
         """
         self.__projector_matrix *= enh
-        origo = np.array([[self.__imsize[1]], [self.__imsize[0]]]) / 2
+        origo = np.array([[self.__imsize[1] - 1], [self.__imsize[0] - 1]]) / 2
         self.__offset = origo * (1 - enh) + enh * self.__offset
 
         R = np.array([[np.cos(alpha), np.sin(alpha)], 
