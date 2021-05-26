@@ -35,7 +35,7 @@ class TestAccessories(unittest.TestCase):
         self.assertAlmostEqual(np.linalg.norm(v), 1, msg="Vector is not properly normed.")
         self.assertAlmostEqual(np.linalg.norm(diff_v), float(v.T @ diff_v), msg="Vector is not properly directed.")
 
-class TestImageProjectorOld(unittest.TestCase):
+class TestSetUpProjection(unittest.TestCase):
     """
     These unit tests test the set_up_projection_old function by comparing its
     results to known correct values.
@@ -114,10 +114,6 @@ class TestImageProjectorOld(unittest.TestCase):
         self.assertTrue(np.allclose(ref_M, matrix), msg='Projection matrix is wrong.')
         self.assertTrue(np.allclose(ref_O, offset), msg='Offset is wrong.')
 
-class TestImageProjector(unittest.TestCase):
-    """
-    This class test the various member functions of the ImageProjector class.
-    """
     def test_set_up_projection(self):
         """
         Compares calculated values to known correct ones for the given input.
@@ -145,33 +141,42 @@ class TestImageProjector(unittest.TestCase):
         self.assertTrue(np.allclose(ref_M, matrix), msg='Projection matrix is wrong.')
         self.assertTrue(np.allclose(ref_O, offset), msg='Offset is wrong.')
 
+
+class TestImageProjector(unittest.TestCase):
+    """
+    This class test the various member functions of the ImageProjector class.
+    """
+
+    def setUp(self):
+        
+        self.R0 = 6.31
+        self.z0 = 0.57
+        self.theta0 = -np.pi / 3
+        self.Rp = 6.274
+        self.zp = 0.023
+        self.thetap = 5 * np.pi / 12
+        self.x0 = rzt_2_xyz(self.R0, self.theta0, self.z0)
+        self.xp = rzt_2_xyz(self.Rp, self.thetap, self.zp)
+        self.view = ImageProjector(self.R0, self.theta0, self.z0, 
+                                   self.Rp, self.thetap, self.zp, old=False)
+
     def test_project_points_1d_1(self):
         """
         Checks wether the projection of a single point works well.
         """
-        R0 = 6.31
-        z0 = 0.57
-        theta0 = -np.pi / 3
-        Rp = 6.274
-        zp = 0.023
-        thetap = 5 * np.pi / 12
-        x0 = rzt_2_xyz(R0, theta0, z0)
-        xp = rzt_2_xyz(Rp, thetap, zp)
-
         x = np.array([[2.74], [4.13], [0.45]])
 
-        view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, old=False)
-        x_pro = view.project_points(x)
+        x_pro = self.view.project_points(x)
 
         self.assertEqual(x.shape, x_pro.shape, 
                          msg="Input and output shapes do not match.")
-        self.assertTrue(np.allclose(xp, view.project_points(xp)), 
+        self.assertTrue(np.allclose(self.xp, self.view.project_points(self.xp)), 
                         msg="Intersection of projection line and plane is not \
                              projected to itself.")
-        self.assertTrue(np.allclose(dir_vector(x, x0), dir_vector(x_pro, x)),
+        self.assertTrue(np.allclose(dir_vector(x, self.x0), dir_vector(x_pro, x)),
                         msg="Projected point is not in line with the original \
                              and the viewport.")
-        self.assertAlmostEqual(float(dir_vector(xp, x0).T @ dir_vector(x_pro, xp)), 0, 
+        self.assertAlmostEqual(float(dir_vector(self.xp, self.x0).T @ dir_vector(x_pro, self.xp)), 0, 
                                msg="Projected point is not on the plane.")
 
     def test_project_points_1d_2(self):
@@ -179,64 +184,92 @@ class TestImageProjector(unittest.TestCase):
         Checks wether the projection of a single point that is behind 
         the plane works well.
         """
-        R0 = 6.31
-        z0 = 0.57
-        theta0 = -np.pi / 3
-        Rp = 6.274
-        zp = 0.023
-        thetap = 5 * np.pi / 12
-        x0 = rzt_2_xyz(R0, theta0, z0)
-        xp = rzt_2_xyz(Rp, thetap, zp)
-
         x = np.array([[3.321], [8.5], [0.234]])
 
-        view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, old=False)
-        x_pro = view.project_points(x)
+        x_pro = self.view.project_points(x)
 
         self.assertEqual(x.shape, x_pro.shape, 
                          msg="Input and output shapes do not match.")
-        self.assertTrue(np.allclose(xp, view.project_points(xp)), 
+        self.assertTrue(np.allclose(self.xp, self.view.project_points(self.xp)), 
                         msg="Intersection of projection line and plane is not \
                              projected to itself.")
-        self.assertTrue(np.allclose(dir_vector(x, x0), -dir_vector(x_pro, x)),
+        self.assertTrue(np.allclose(dir_vector(x, self.x0), -dir_vector(x_pro, x)),
                         msg="Projected point is not in line with the original \
                              and the viewport.")
-        self.assertAlmostEqual(float(dir_vector(xp, x0).T @ dir_vector(x_pro, xp)), 0, 
+        self.assertAlmostEqual(float(dir_vector(self.xp, self.x0).T @ dir_vector(x_pro, self.xp)), 0, 
                                msg="Projected point is not on the plane.")
-
 
     def test_project_points_2d(self):
         """
         Checks wether the projection of multiple points in a 2d array works well.
         """
-        R0 = 6.31
-        z0 = 0.57
-        theta0 = -np.pi / 3
-        Rp = 6.274
-        zp = 0.023
-        thetap = 5 * np.pi / 12
-        x0 = rzt_2_xyz(R0, theta0, z0)
-        xp = rzt_2_xyz(Rp, thetap, zp)
-
         x = np.array([[2.74, 3.321, 0.98], [4.13, 5.7, 1.43], [0.234, 0.45, 0]])
 
-        view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, old=False)
-        x2 = view.project_points(x)
+        x2 = self.view.project_points(x)
 
         self.assertEqual(x.shape, x2.shape, 
                          msg="Input and output shapes do not match.")
-        self.assertTrue(np.allclose((x - x0) / np.linalg.norm(x - x0, axis=0), 
+        self.assertTrue(np.allclose((x - self.x0) / np.linalg.norm(x - self.x0, axis=0), 
                                     (x2 - x) / np.linalg.norm(x2 - x, axis=0)),
                                     msg="Projected points are not in line with \
                                         the original and the viewport.")
-        self.assertTrue(np.allclose((xp - x0).T @ (x2 - xp), np.array([0, 0, 0])), 
+        self.assertTrue(np.allclose((self.xp - self.x0).T @ (x2 - self.xp), np.array([0, 0, 0])), 
                         msg="Projected points are not on the plane.")
 
-    def test_calc_pixel_coord(self):
-        
+    def test_calc_pixel_coord_1(self):
+        """
+        Checks if the result is the proper shape.
+        Checks if the intersection of the projection line and projection plane 
+        is returned as (0, 0) if no offset is given.
+        Checks if the projection keeps length and orientation.
+        """
+        x = np.array([[2.74, 3.321, 0.98], [4.13, 5.7, 1.43], [0.234, 0.45, 0]])
 
-        self.assertTrue(True)
+        x_pro = self.view.project_points(x)
 
+        x = self.view.calc_pixel_coord(x)
+        self.assertEqual(x.shape, (2, 3), msg="Incorrect output shape.")
+
+        self.assertTrue(np.allclose(self.view.calc_pixel_coord(self.xp), 
+                                    np.array([[0], [0]])), 
+                                    msg="Interjection is not projected to (0, 0).")
+
+        x_pro = x_pro - self.xp
+        self.assertTrue(np.allclose(np.linalg.norm(x_pro, axis=0), 
+                                    np.linalg.norm(x, axis=0)), 
+                                    msg="Projection doesn't keep length.")
+
+        self.assertAlmostEqual(np.arccos(x_pro[:, 0] @ x_pro[:, 1] / 
+                               np.prod(np.linalg.norm(x_pro[:, 0:2], axis=0))), 
+                               np.arccos(x[:, 0] @ x[:, 1] / 
+                               np.prod(np.linalg.norm(x[:, 0:2], axis=0))),
+                               msg="Orientation is not preserved.")
+    
+    def test_calc_pixel_coord_2(self):
+        """
+        Tests if other projection parameters work as intended.
+        """
+        enh = 3.6
+        alpha = 2 * np.pi / 5
+        offset = np.array([[4.3], [7.2]])
+
+        x = np.array([[3.321], [8.5], [0.234]])
+        x1 = self.view.calc_pixel_coord(x)
+
+        view2 = ImageProjector(self.R0, self.theta0, self.z0, 
+                               self.Rp, self.thetap, self.zp, 
+                               enh, alpha, offset[0, 0], offset[1, 0], 
+                               old=False)
+
+        x2 = view2.calc_pixel_coord(x)
+
+        self.assertTrue(np.allclose(view2.calc_pixel_coord(self.xp), offset), 
+                                    msg="Interjection is not projected to offset.")
+        self.assertAlmostEqual(np.linalg.norm(x2 - offset) / np.linalg.norm(x1), 
+                               enh, msg="Enlargement doesn't work properly.")
+        self.assertAlmostEqual(np.arccos(x1.T @ (x2 - offset) /  
+                              (np.linalg.norm(x2 - offset) * np.linalg.norm(x1))),
+                              alpha, msg="Rotation doesn't work properly.")
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
