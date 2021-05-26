@@ -58,22 +58,22 @@ class ImageProjector:
              supplied according to his calibration.
         """
         #Transforming cylindrical coordinates to xyz
-        self.x0 = rzt_2_xyz(R0, theta0, z0)
-        self.xp = rzt_2_xyz(Rp, thetap, zp)
+        self.__x0 = rzt_2_xyz(R0, theta0, z0)
+        self.__xp = rzt_2_xyz(Rp, thetap, zp)
 
         #Calculating the normal vector and constant of the image plane
-        self.norm = np.transpose((self.x0 - self.xp) / np.linalg.norm(self.x0 - self.xp))[0]
-        self.d = -self.norm @ self.xp
+        self.__norm = np.squeeze(dir_vector(self.__x0, self.__xp))
+        self.__d = -self.__norm @ self.__xp
 
         self.viewpoint = viewpoint
         self.shot = shot
         self.cam = cam
-        self.imsize = imsize
+        self.__imsize = imsize
 
         #Wether the projected points orientation should be mirrored to match 
         #image orientation. (Due to (0,0) being in the upper left corner). 
         #Not used in "Legacy mode".
-        self.mirror = 1
+        self.__mirror = 1
         if old:
             self.__set_up_projection_old(enh, alpha, xoff, yoff)
         else:
@@ -127,40 +127,46 @@ class ImageProjector:
         Rotation and projection are relative to the intersection
         of the line of view and the image plane.
         """
-        base_0 = np.array([self.norm[1], -self.norm[0], 0])
+        base_0 = np.array([self.__norm[1], -self.__norm[0], 0])
         base_0 = base_0 / np.linalg.norm(base_0)
-        base_1 = np.cross(self.norm, base_0)
+        base_1 = np.cross(self.__norm, base_0)
 
         if mirror in {-1, 1}:
-            self.mirror = mirror
+            self.__mirror = mirror
 
-        self.projector_matrix = enh * np.array([[np.cos(alpha), self.mirror * np.sin(alpha)], 
-                                               [-np.sin(alpha), self.mirror * np.cos(alpha)]]) @ np.array([base_0, base_1])
+        self.__projector_matrix = enh * np.array([[np.cos(alpha), self.__mirror * np.sin(alpha)], 
+                                                 [-np.sin(alpha), self.__mirror * np.cos(alpha)]]) @ np.array([base_0, base_1])
 
-        self.offset = self.projector_matrix @ -self.xp + np.array([[xoff], [yoff]])
+        self.__offset = self.__projector_matrix @ -self.__xp + np.array([[xoff], [yoff]])
 
     def __set_up_projection_old(self, enh, alpha, xoff, yoff):
         """
         Legacy mode calculation of projection matrix and translation vector.
         This method is a reimplementation of the IDL routines of @Csega.
         """
-        a = self.norm[0]
-        b = self.norm[1]
-        c = self.norm[2]
+        a = self.__norm[0]
+        b = self.__norm[1]
+        c = self.__norm[2]
         cc = np.cos(alpha)
         ss = np.sin(alpha)
         tt = 1 - np.cos(alpha)
         R = np.array([[tt*a**2 + cc, tt*a*b - ss*c, tt*a*c + ss*b],
-                    [tt*a*b + ss*c, tt*b**2 + cc, tt*b*c - ss*a],
-                    [tt*a*c - ss*b, tt*b*c + ss*a, tt*c**2 + cc]])
+                      [tt*a*b + ss*c, tt*b**2 + cc, tt*b*c - ss*a],
+                      [tt*a*c - ss*b, tt*b*c + ss*a, tt*c**2 + cc]])
 
         base_0 = np.array([c, (b * c) / (a - 1), 1 + c**2 / (a - 1)])
-        base_1 = np.cross(self.norm, base_0)
+        base_1 = np.cross(self.__norm, base_0)
 
-        self.projector_matrix = 190 * enh * np.array([base_1, base_0]) @ R
+        self.__projector_matrix = 190 * enh * np.array([base_1, base_0]) @ R
 
-        self.offset = 190 * np.array([[yoff + 2.59155], [xoff + 5.18956]])
+        self.__offset = 190 * np.array([[yoff + 2.59155], [xoff + 5.18956]])
     
+    def view_parameters(self):
+        """
+        Return a copy of the projection parameters.
+        """
+        return np.copy(self.__projector_matrix), np.copy(self.__offset)
+
     def calculate_parameters(self, x1, y1, x2, y2, p1, p2, mirror=True):
         """
         This method calculates the enlargement, rotation and offset 
@@ -206,25 +212,25 @@ class ImageProjector:
         enlarge, rotate and translate the rojected points relative 
         to the center of the image.
         """
-        self.projector_matrix *= enh
-        origo = np.array([[self.imsize[1]], [self.imsize[0]]]) / 2
-        self.offset = origo * (1 - enh) + enh * self.offset
+        self.__projector_matrix *= enh
+        origo = np.array([[self.__imsize[1] - 1], [self.__imsize[0] - 1]]) / 2
+        self.__offset = origo * (1 - enh) + enh * self.__offset
 
         R = np.array([[np.cos(alpha), np.sin(alpha)], 
                      [-np.sin(alpha), np.cos(alpha)]])    
-        self.projector_matrix = R @ self.projector_matrix
-        self.offset = R @ (self.offset - origo) + origo
+        self.__projector_matrix = R @ self.__projector_matrix
+        self.__offset = R @ (self.__offset - origo) + origo
 
-        self.offset += np.array([[xoff], [yoff]])
+        self.__offset += np.array([[xoff], [yoff]])
 
     def project_points(self, points):
         """
         Projects point to image plane. Input is a 3d column vector or 
         a 3xn matrix where the columns are the projected points.
         """
-        points = points - self.x0
-        t = (-self.d - self.norm @ self.x0) / (self.norm @ points)
-        return points * t + self.x0
+        points = points - self.__x0
+        t = (-self.__d - self.__norm @ self.__x0) / (self.__norm @ points)
+        return points * t + self.__x0
 
     def calc_pixel_coord(self, points):
         """
@@ -233,7 +239,10 @@ class ImageProjector:
         projected points.
         """
         points = self.project_points(points)
-        return self.projector_matrix @ points + self.offset
+        return self.__projector_matrix @ points + self.__offset
+
+def dir_vector(x1, x2):
+    return (x1 - x2) / np.linalg.norm(x1 - x2)
 
 def rzt_2_xyz(r, theta, z):
     """
