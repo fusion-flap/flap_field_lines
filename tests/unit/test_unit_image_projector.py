@@ -138,7 +138,7 @@ class TestImageProjector(unittest.TestCase):
         self.assertTrue(np.allclose(ref_M, matrix))
         self.assertTrue(np.allclose(ref_O, offset))
 
-    def test_project_points(self):
+    def test_project_points_1d(self):
         R0 = 6.31
         z0 = 0.57
         theta0 = -np.pi / 3
@@ -153,9 +153,35 @@ class TestImageProjector(unittest.TestCase):
         view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, old=False)
         x_pro = view.project_points(x)
 
+        self.assertEqual(x.shape, x_pro.shape)
         self.assertTrue(np.allclose(xp, view.project_points(xp)))
         self.assertTrue(np.allclose(dir_vector(x, x0), dir_vector(x_pro, x)))
         self.assertAlmostEqual(float(dir_vector(xp, x0).T @ dir_vector(x_pro, xp)), 0)
+
+    def test_project_points_2d(self):
+        R0 = 6.31
+        z0 = 0.57
+        theta0 = -np.pi / 3
+        Rp = 6.274
+        zp = 0.023
+        thetap = 5 * np.pi / 12
+        x0 = rzt_2_xyz(R0, theta0, z0)
+        xp = rzt_2_xyz(Rp, thetap, zp)
+
+        x = np.array([[2.74, 3.321, 0.98], [4.13, 8.5, 1.43], [0.234, 0.45, 0]])
+
+        view = ImageProjector(R0, theta0, z0, Rp, thetap, zp, old=False)
+        x2 = view.project_points(x)
+
+        self.assertEqual(x.shape, x2.shape)
+        self.assertTrue(np.allclose((x - x0) / np.linalg.norm(x - x0, axis=0), 
+                                    (x2 - x) / np.linalg.norm(x2 - x, axis=0)))
+        self.assertTrue(np.allclose((xp - x0).T @ (x2 - xp), np.array([0, 0, 0])))
+
+    def test_calc_pixel_coord(self):
+        
+
+        self.assertTrue(True)
 
 
 if __name__ == '__main__':
