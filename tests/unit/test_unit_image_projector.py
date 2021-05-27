@@ -293,7 +293,7 @@ class TestProjectionUpdate(unittest.TestCase):
         This test checks if enhancement, rotation and translation works well.
         """        
         view = ImageProjector.from_file('W7X-AEQ31', '20160218', 'edicam', 
-                                        'tests/integration/fixtures/views2.txt')
+                                        'views2.txt')
         
         view.update_projection(self.enh, self.alpha, 
                                self.offset[0, 0], self.offset[1, 0])
