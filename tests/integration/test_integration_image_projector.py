@@ -127,5 +127,25 @@ class TestNew(unittest.TestCase):
         thetap = 3.72000
         self.assertTrue(self.compare_points(R0, theta0, z0, Rp, thetap, zp, view))
 
+class Test3dInput(unittest.TestCase):
+    """
+    This class checks if proper results are returned in case of the input 
+    array being 3d.
+    """
+    def test_calc_pixel_coord_3d(self):
+        path = 'tests/integration/fixtures/'
+        
+        points = np.load(path + '3d_test_array.npy', 
+                         allow_pickle=False)
+        points_ref = np.load(path + '3d_test_array_ref.npy', 
+                             allow_pickle=False)
+
+        view = ImageProjector.from_file('W7X-AEQ31', '20160218', 'edicam', 
+                                        path + 'views2.txt')
+        
+        points = view.calc_pixel_coord(points)
+
+        self.assertTrue(np.allclose(points, points_ref))
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
