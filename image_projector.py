@@ -165,7 +165,7 @@ class ImageProjector:
         """
         Return a copy of the projection parameters.
         """
-        return np.copy(self.__projector_matrix), np.copy(self.__offset)
+        return np.copy(self.__projector_matrix), self.__offset.reshape(2,1)
 
     def calculate_parameters(self, x1, y1, x2, y2, p1, p2, mirror=True):
         """
@@ -214,6 +214,9 @@ class ImageProjector:
         """
         self.__projector_matrix *= enh
         origo = np.array([[self.__imsize[1] - 1], [self.__imsize[0] - 1]]) / 2
+        
+        if self.__offset.ndim != 2:
+            self.__offset = self.__offset.reshape(2,1)
         self.__offset = origo * (1 - enh) + enh * self.__offset
 
         R = np.array([[np.cos(alpha), np.sin(alpha)], 
@@ -225,11 +228,12 @@ class ImageProjector:
 
     def project_points(self, points):
         """
-        Projects point to image plane. Input is a 3d column vector or 
-        a 3xn matrix where the columns are the projected points.
+        Projects point to image plane. Input is a 3xn matrix 
+        where the columns are the projected points.
         """
         points = points - self.__x0
-        t = (-self.__d - self.__norm @ self.__x0) / (self.__norm @ points)
+        t = (-self.__d - np.tensordot(self.__norm, self.__x0, axes=(0,0))) / \
+            np.tensordot(self.__norm, points, axes=(0,0))
         return points * t + self.__x0
 
     def calc_pixel_coord(self, points):
@@ -238,8 +242,16 @@ class ImageProjector:
         column vector or a 3xn matrix where the columns are the 
         projected points.
         """
+        if points.ndim == 3:
+            self.__x0 = self.__x0.reshape(3,1,1)
+            self.__offset = self.__offset.reshape(2,1,1)
+        elif points.ndim == 2:
+            self.__x0 = self.__x0.reshape(3,1)
+            self.__offset = self.__offset.reshape(2,1)
+        else:
+            raise ValueError("Inappropriate number of input dimensions.")
         points = self.project_points(points)
-        return self.__projector_matrix @ points + self.__offset
+        return np.tensordot(self.__projector_matrix, points, axes=(1,0)) + self.__offset
 
 def dir_vector(x1, x2):
     return (x1 - x2) / np.linalg.norm(x1 - x2)
