@@ -16,7 +16,7 @@ class TestOld(unittest.TestCase):
     points of each camera view to the correct values.
     """
     def setUp(self):
-        self.file='tests/integration/fixtures/views2.txt'
+        self.file='views2.txt'
 
     def compare_points(self, view, shot, cam):
         """
@@ -141,7 +141,7 @@ class Test3dInput(unittest.TestCase):
                              allow_pickle=False)
 
         view = ImageProjector.from_file('W7X-AEQ31', '20160218', 'edicam', 
-                                        path + 'views2.txt')
+                                        'views2.txt')
         
         points = view.calc_pixel_coord(points)
 
