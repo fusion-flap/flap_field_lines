@@ -21,7 +21,9 @@ class ImageProjector:
     """
     This class calculates the parameters of the projection to a camera image. 
     These consist of a projection matrix (2x3) and a translation vector (2).
-    The projected points are expected to be the columns of the input for the projection.
+    Projection is handled by the calc_pixel_coordinates function. The projected 
+    points are expected to be the columns of the input, which my be a 2 or 3 
+    dimension array having 3 as the length of its 0th dimension.
     """
     def __init__(self, 
                  R0=1, 
