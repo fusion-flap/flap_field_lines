@@ -40,7 +40,7 @@ class ImageProjector:
                  shot=None, 
                  cam=None, 
                  imsize=[1280, 1024], 
-                 old = True,):
+                 old = True):
         """
         Default constructor.
         R0, theta0, z0: The coordinates of the viewpoint in cylindrical
