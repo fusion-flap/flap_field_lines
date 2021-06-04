@@ -311,7 +311,8 @@ class TestProjectionUpdate(unittest.TestCase):
 
     def test_update_projection(self):
         """
-        This test checks if enhancement, rotation and translation works well.
+        This test checks if updating enhancement, rotation and translation works well, 
+        by comparing the modified projections results to the original.
         """        
         R0 = 6.44669
         z0 = 0.665888
