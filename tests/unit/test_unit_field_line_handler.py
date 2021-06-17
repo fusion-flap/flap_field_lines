@@ -18,6 +18,9 @@ class TestAccessories(unittest.TestCase):
         """
         This test checks if proper output is given by process_selection for 
         proper input, and proper errors are raised if not.
+        Checks for single input, range and individual selection.
+        Checks for proper exceptions in the case of non-int input and 
+        improper string format.
         """
         self.assertEquals([5], process_selection(5))
         self.assertEqual(range(3, 7), process_selection('3:7'))
@@ -28,3 +31,13 @@ class TestAccessories(unittest.TestCase):
         self.assertRaises(TypeError, process_selection, 3.75)
         self.assertRaises(TypeError, process_selection, (1, 3.2))
         self.assertRaises(ValueError, process_selection, 'retek')
+
+class TestFieldLineHandlerConstructor(unittest.TestCase):
+    """
+    These tests check the FieldLineHandler constructor with various correct or 
+    incorrect inputs.
+    """
+    def test_exceptions_raised(self):
+        self.assertRaises(ValueError, FieldLineHandler, configuration='retek')
+        self.assertRaises(ValueError, FieldLineHandler, direction='retek')
+        self.assertRaises(IOError, FieldLineHandler, path='retek')
