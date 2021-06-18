@@ -38,6 +38,14 @@ class TestFieldLineHandlerConstructor(unittest.TestCase):
     incorrect inputs.
     """
     def test_exceptions_raised(self):
+        """
+        Checks if proper exceptions are raised for faulty inputs and 
+        nonexistent paths.
+        """
         self.assertRaises(ValueError, FieldLineHandler, configuration='retek')
         self.assertRaises(ValueError, FieldLineHandler, direction='retek')
         self.assertRaises(IOError, FieldLineHandler, path='retek')
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
