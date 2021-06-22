@@ -6,7 +6,6 @@ Created on Tue June 4 2021
 """
 
 import unittest
-import numpy as np
 
 from flap_field_lines.field_line_handler import *
 
