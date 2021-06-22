@@ -70,7 +70,7 @@ class FieldLineHandler:
         if direction in ('forward', 'backward', 'both'):
             self.direction = direction
         else:
-            raise ValueError('Direction of field lines is invalid. Should be "forward", "backward" or "both".\n')
+            raise ValueError('Direction of field lines is invalid. Should be "forward", "backward" or "both".')
         self.__field_lines = []
 
         #processes selections
@@ -97,7 +97,7 @@ class FieldLineHandler:
                     print(err)    
         
         if self.__field_lines == []:
-            raise IOError("No flux surface files found.\n")
+            raise IOError("No flux surface files found.")
 
         #proceeds to read the rest
         i = selected_surf.index(i)
@@ -126,7 +126,7 @@ class FieldLineHandler:
         Raises "NoSurfaceFileError" if file not found.
         """
         #converts surface number to file number
-        string_no = '0%d' % surf_no
+        string_no = '%d' % surf_no
         if surf_no < 10:
             string_no = '0' + string_no
         
@@ -158,10 +158,10 @@ class FieldLineHandler:
             lines = np.array([surf['surface'][0][4][lines_no], 
                               surf['surface'][0][5][lines_no], 
                               surf['surface'][0][6][lines_no]])
-            lines = np.concatenate(np.array([surf['surface'][0][7][lines_no, -1::-1], 
-                                             surf['surface'][0][8][lines_no, -1::-1], 
-                                             surf['surface'][0][9][lines_no, -1::-1]]), 
-                                             lines, axis=2)
+            lines = np.concatenate((np.array([surf['surface'][0][7][lines_no, -1::-1], 
+                                              surf['surface'][0][8][lines_no, -1::-1], 
+                                              surf['surface'][0][9][lines_no, -1::-1]]), 
+                                              lines), axis=2)
         #if no toroidal range is specified, chooses all
         if tor_range is None:
             tor_range = range(len(surf['surface'][0][4][0]))
