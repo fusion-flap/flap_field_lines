@@ -39,7 +39,7 @@ class TestAccessories(unittest.TestCase):
 class TestSetUpProjection(unittest.TestCase):
     """
     These unit tests test the set_up_projection_old function by comparing its
-    results to known correct values.
+    results to known correct values for 4 viewports.
     """
     def test_set_up_projection_old_aeq20(self):
         R0 = 6.34811
@@ -149,7 +149,9 @@ class TestImageProjector(unittest.TestCase):
     """
 
     def setUp(self):
-        
+        """
+        Sets up a custom view for later tests.
+        """
         self.R0 = 6.31
         self.z0 = 0.57
         self.theta0 = -np.pi / 3
@@ -311,7 +313,8 @@ class TestProjectionUpdate(unittest.TestCase):
 
     def test_update_projection(self):
         """
-        This test checks if enhancement, rotation and translation works well.
+        This test checks if updating enhancement, rotation and translation works well, 
+        by comparing the modified projections results to the original.
         """        
         R0 = 6.44669
         z0 = 0.665888

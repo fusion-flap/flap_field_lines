@@ -40,7 +40,7 @@ class ImageProjector:
                  shot=None, 
                  cam=None, 
                  imsize=[1280, 1024], 
-                 old = True,):
+                 old = True):
         """
         Default constructor.
         R0, theta0, z0: The coordinates of the viewpoint in cylindrical
@@ -244,7 +244,10 @@ class ImageProjector:
         column vector or a 3xn matrix where the columns are the 
         projected points.
         """
-        if points.ndim == 3:
+        if points.ndim == 4:
+            self.__x0 = self.__x0.reshape(3,1,1,1)
+            self.__offset = self.__offset.reshape(2,1,1,1)
+        elif points.ndim == 3:
             self.__x0 = self.__x0.reshape(3,1,1)
             self.__offset = self.__offset.reshape(2,1,1)
         elif points.ndim == 2:
