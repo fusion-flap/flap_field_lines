@@ -117,6 +117,8 @@ class FieldLineHandler:
                 self.__field_lines = np.concatenate((self.__field_lines, 
                                                    new_lines[..., np.newaxis]), 
                                                    axis=-1)    
+            if self.__field_lines.shape[3] == 1:
+                self.__field_lines = np.squeeze(self.__field_lines)
 
     def __return_lines_from_surf(self, surf_no, lines_no, tor_range):
         """
