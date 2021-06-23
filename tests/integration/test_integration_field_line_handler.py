@@ -66,6 +66,3 @@ class TestConstructor(unittest.TestCase):
         field_lines = FieldLineHandler(self.path, surface=[30, 35, 40],
                                        lines=self.lines, tor_range=self.tor_range)
         self.assertEqual(field_lines.get_field_lines().shape, (3, 4, 10, 2))
-
-        
-        
