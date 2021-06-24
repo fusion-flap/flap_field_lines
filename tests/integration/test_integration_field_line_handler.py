@@ -21,7 +21,7 @@ class TestConstructor(unittest.TestCase):
     location.
     """
     #Give flux surface files location here
-    data_path = '/media/data/w7x_flux_surfaces/test'
+    data_path = '/media/data/w7x_flux_surfaces/test/%s'
 
     def setUp(self) -> None:
         """

@@ -27,7 +27,7 @@ class FieldLineHandler:
           and toroidal coordinates
     """
     def __init__(self, 
-                 path='/data/W7-X/processed_data/flux_surfaces/EIM+252_detailed_w_o_limiters_w_o_torsion/field_lines', 
+                 path='/data/W7-X/processed_data/flux_surfaces/%s+252_detailed_w_o_limiters_w_o_torsion/field_lines', 
                  configuration='EIM', 
                  surface=None, 
                  lines=None, 
@@ -61,8 +61,13 @@ class FieldLineHandler:
         Raises: ValueError, IOError, TypeError
         """
         #checks input
-        self.file = path + '/field_lines_tor_ang_1.85_1turn_%s+252_w_o_limiters_w_o_torsion_w_characteristics_surf_0'
-        if configuration in ('EIM', 'FTM'):
+        self.file = path
+        if configuration in ('EIM', 'FTM', 'KJM001'):
+            try:
+                self.file = self.file % configuration 
+            except TypeError:
+                pass
+            self.file += '/field_lines_tor_ang_1.85_1turn_%s+252_w_o_limiters_w_o_torsion_w_characteristics_surf_0'
             self.file = self.file % configuration + '%s.sav'
         else:
             raise ValueError('Wrong configuration.')
