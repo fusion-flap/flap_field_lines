@@ -32,7 +32,9 @@ class FieldLineHandler:
                  surface=None, 
                  lines=None, 
                  tor_range=None, 
-                 direction='forward'):
+                 direction='forward',
+                 getB = False,
+                 gradB = False):
         """
         Constructor of the class. Its inputs are:
         path: Where the precalculated field lines are stored.
@@ -61,6 +63,8 @@ class FieldLineHandler:
         Raises: ValueError, IOError, TypeError
         """
         #checks input
+        self.get_B = getB
+        self.get_gradB = gradB
         self.file = path
         if configuration in ('EIM', 'FTM', 'KJM001'):
             try:
@@ -77,6 +81,8 @@ class FieldLineHandler:
         else:
             raise ValueError('Direction of field lines is invalid. Should be "forward", "backward" or "both".')
         self.__field_lines = []
+        self.__B = None
+        self.__gradB = None
 
         #processes selections
         selected_surf = range(200)
@@ -94,7 +100,7 @@ class FieldLineHandler:
         #finds and readds first readable surface file
         for i in selected_surf:
             try:
-                self.__field_lines = self.__return_lines_from_surf(i, selected_lines, selected_range)
+                self.__field_lines, self.__B, self.__gradB = self.__return_lines_from_surf(i, selected_lines, selected_range)
                 break
             except NoSurfaceFileError as err:
                 #if a user specified surface file is not found, prints error
@@ -110,10 +116,14 @@ class FieldLineHandler:
             #if there's more to read, extends array dimensions and  joins them 
             # by the last
             self.__field_lines = self.__field_lines[..., np.newaxis]
+            if self.get_B:
+                self.__B = self.__B[..., np.newaxis]
+            if self.get_gradB:
+                self.__gradB = self.__gradB[..., np.newaxis]
 
             for j in selected_surf[i + 1:]:
                 try:
-                    new_lines = self.__return_lines_from_surf(j, selected_lines, selected_range)
+                    new_lines, new_B, new_gradB = self.__return_lines_from_surf(j, selected_lines, selected_range)
                 except NoSurfaceFileError as err:
                     #if a user specified surface file is not found, prints error
                     if surface is not None:
@@ -122,8 +132,20 @@ class FieldLineHandler:
                 self.__field_lines = np.concatenate((self.__field_lines, 
                                                    new_lines[..., np.newaxis]), 
                                                    axis=-1)    
+                if self.get_B:
+                    self.__B = np.concatenate((self.__B, 
+                                            new_B[..., np.newaxis]), 
+                                            axis=-1)    
+                if self.get_gradB:
+                    self.__gradB = np.concatenate((self.__gradB, 
+                                                new_gradB[..., np.newaxis]), 
+                                                axis=-1)    
             if self.__field_lines.shape[3] == 1:
                 self.__field_lines = np.squeeze(self.__field_lines)
+                if self.get_B:
+                    self.__B = np.squeeze(self.__B)
+                if self.get_gradB:
+                    self.__gradB = np.squeeze(self.__gradB)
 
     def __return_lines_from_surf(self, surf_no, lines_no, tor_range):
         """
@@ -143,36 +165,48 @@ class FieldLineHandler:
 
         #reads file, initializes storage variable
         surf = readsav(self.file % string_no)
-        lines = []
 
         #if no lines are specified, chooses all
         if lines_no is None:
             lines_no = range(len(surf['surface'][0][4]))
 
-        if self.direction == 'forward':
-            #reads forward calculated field lines
-            lines = np.array([surf['surface'][0][4][lines_no], 
-                              surf['surface'][0][5][lines_no], 
-                              surf['surface'][0][6][lines_no]])
-        elif self.direction == 'backward':
-            #reads backward calculated field lines
-            lines = np.array([surf['surface'][0][7][lines_no], 
-                              surf['surface'][0][8][lines_no], 
-                              surf['surface'][0][9][lines_no]])
-        elif self.direction == 'both':
-            #reads both. backward lines are erversed and placed in front of 
-            #forward lines
-            lines = np.array([surf['surface'][0][4][lines_no], 
-                              surf['surface'][0][5][lines_no], 
-                              surf['surface'][0][6][lines_no]])
-            lines = np.concatenate((np.array([surf['surface'][0][7][lines_no, -1::-1], 
-                                              surf['surface'][0][8][lines_no, -1::-1], 
-                                              surf['surface'][0][9][lines_no, -1::-1]]), 
-                                              lines), axis=2)
         #if no toroidal range is specified, chooses all
         if tor_range is None:
             tor_range = range(len(surf['surface'][0][4][0]))
 
+        lines = self.extract_roi_from_lines(surf, lines_no, tor_range, 4)
+        if self.get_B:
+            B = self.extract_roi_from_lines(surf, lines_no, tor_range, 10)
+        else:
+            B = None
+        if self.get_gradB:
+            gradB = self.extract_roi_from_lines(surf, lines_no, tor_range, 16)
+        else:
+            gradB = None
+        return lines, B, gradB
+
+    def extract_roi_from_lines(self, surf, lines_no, tor_range, index_no):
+        lines = []
+        if self.direction == 'forward':
+            #reads forward calculated field lines
+            lines = np.array([surf['surface'][0][index_no][lines_no], 
+                              surf['surface'][0][index_no + 1][lines_no], 
+                              surf['surface'][0][index_no + 2][lines_no]])
+        elif self.direction == 'backward':
+            #reads backward calculated field lines
+            lines = np.array([surf['surface'][0][index_no + 3][lines_no], 
+                              surf['surface'][0][index_no + 4][lines_no], 
+                              surf['surface'][0][index_no + 5][lines_no]])
+        elif self.direction == 'both':
+            #reads both. backward lines are erversed and placed in front of 
+            #forward lines
+            lines = np.array([surf['surface'][0][index_no][lines_no], 
+                              surf['surface'][0][index_no + 1][lines_no], 
+                              surf['surface'][0][index_no + 2][lines_no]])
+            lines = np.concatenate((np.array([surf['surface'][0][index_no + 3][lines_no, -1::-1], 
+                                              surf['surface'][0][index_no + 4][lines_no, -1::-1], 
+                                              surf['surface'][0][index_no + 5][lines_no, -1::-1]]), 
+                                              lines), axis=2)
         return lines[:, :, tor_range]
 
     def get_field_lines(self):
