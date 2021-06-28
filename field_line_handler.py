@@ -114,7 +114,7 @@ class FieldLineHandler:
         i = selected_surf.index(i)
         if len(selected_surf) > i + 1:
             #if there's more to read, extends array dimensions and  joins them 
-            # by the last
+            #by the last
             self.__field_lines = self.__field_lines[..., np.newaxis]
             if self.get_B:
                 self.__B = self.__B[..., np.newaxis]
@@ -215,6 +215,18 @@ class FieldLineHandler:
         """
         return self.__field_lines
                 
+
+    def get_B(self):
+        """
+        Returnes stored data
+        """
+        return self.__B
+
+    def get_gradB(self):
+        """
+        Returnes stored data
+        """
+        return self.__gradB
 
 def process_selection(selected):
     """
