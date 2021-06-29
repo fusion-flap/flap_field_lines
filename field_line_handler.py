@@ -209,20 +209,20 @@ class FieldLineHandler:
                                               lines), axis=2)
         return lines[:, :, tor_range]
 
-    def get_field_lines(self):
+    def return_field_lines(self):
         """
         Returnes stored data
         """
         return self.__field_lines
                 
 
-    def get_B(self):
+    def return_B(self):
         """
         Returnes stored data
         """
         return self.__B
 
-    def get_gradB(self):
+    def return_gradB(self):
         """
         Returnes stored data
         """
