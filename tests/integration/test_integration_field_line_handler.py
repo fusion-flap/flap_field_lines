@@ -57,10 +57,28 @@ class TestConstructor(unittest.TestCase):
                                         field_lines_2.return_field_lines()))
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
-    def test_read_B_gradB(self):
+    def test_read_multiple_files(self):
         """
         Checks reading from multiple files. Also tests correct behaviour if 
-        some files are not found.
+        some files are not found. Checks if fs_info is properly read.
+        """
+        field_lines = FieldLineHandler(self.data_path, lines=self.lines, 
+                                       tor_range=self.tor_range)
+        self.assertEqual(field_lines.return_field_lines().shape, (3, 4, 10, 2))
+        field_lines = FieldLineHandler(self.data_path, surface=(25, 30, 35),
+                                       lines=self.lines, tor_range=self.tor_range)
+        self.assertEqual(field_lines.return_field_lines().shape, (3, 4, 10))
+        field_lines = FieldLineHandler(self.data_path, surface=[30, 35, 40],
+                                       lines=self.lines, tor_range=self.tor_range)
+        self.assertEqual(field_lines.return_field_lines().shape, (3, 4, 10, 2))
+        fs_info = field_lines.return_fs_info()
+        self.assertTrue(np.array_equal(fs_info['separatrix'], [83, 43, 55, 65, 76, 87]))
+        self.assertListEqual(fs_info['flags'], [0., 0.])
+
+    @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
+    def test_read_B_gradB(self):
+        """
+        Checks reading B and gradB.
         """
         field_lines = FieldLineHandler(self.data_path, surface=(30, 40), lines=self.lines, 
                                        tor_range=self.tor_range, getB=True)
@@ -72,20 +90,3 @@ class TestConstructor(unittest.TestCase):
                                        tor_range=self.tor_range, getB=True, gradB=True)
         self.assertEqual(field_lines.return_B().shape, (3, 4, 10, 2))
         self.assertEqual(field_lines.return_gradB().shape, (3, 4, 10, 2))
-
-    @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
-    def test_read_multiple_files(self):
-        """
-        Checks reading from multiple files. Also tests correct behaviour if 
-        some files are not found.
-        """
-        field_lines = FieldLineHandler(self.data_path, lines=self.lines, 
-                                       tor_range=self.tor_range)
-        self.assertEqual(field_lines.return_field_lines().shape, (3, 4, 10, 2))
-        field_lines = FieldLineHandler(self.data_path, surface=(25, 30, 35),
-                                       lines=self.lines, tor_range=self.tor_range)
-        self.assertEqual(field_lines.return_field_lines().shape, (3, 4, 10))
-        field_lines = FieldLineHandler(self.data_path, surface=[30, 35, 40],
-                                       lines=self.lines, tor_range=self.tor_range)
-        self.assertEqual(field_lines.return_field_lines().shape, (3, 4, 10, 2))
-

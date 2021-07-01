@@ -71,6 +71,7 @@ class FieldLineHandler:
                 self.file = self.file % configuration 
             except TypeError:
                 pass
+            fs_info = self.file + '/fs_info.sav'
             self.file += '/field_lines_tor_ang_1.85_1turn_%s+252_w_o_limiters_w_o_torsion_w_characteristics_surf_0'
             self.file = self.file % configuration + '%s.sav'
         else:
@@ -84,8 +85,14 @@ class FieldLineHandler:
         self.__B = None
         self.__gradB = None
 
+        fs_info = self.__read_fs_info(fs_info)
+        self.__fs_info = fs_info.copy()
+        self.__fs_info['iota'] = []
+        self.__fs_info['reff'] = []
+        self.__fs_info['flags'] = []
+
         #processes selections
-        selected_surf = range(200)
+        selected_surf = range(len(fs_info['iota']))
         if surface is not None:
             selected_surf = process_selection(surface)
 
@@ -110,6 +117,10 @@ class FieldLineHandler:
         if self.__field_lines == []:
             raise IOError("No flux surface files found.")
 
+        self.__fs_info['iota'].append(fs_info['iota'][i])
+        self.__fs_info['reff'].append(fs_info['reff'][i])
+        self.__fs_info['flags'].append(fs_info['flags'][i])
+
         #proceeds to read the rest
         i = selected_surf.index(i)
         if len(selected_surf) > i + 1:
@@ -132,6 +143,11 @@ class FieldLineHandler:
                 self.__field_lines = np.concatenate((self.__field_lines, 
                                                    new_lines[..., np.newaxis]), 
                                                    axis=-1)    
+
+                self.__fs_info['iota'].append(fs_info['iota'][j])
+                self.__fs_info['reff'].append(fs_info['reff'][j])
+                self.__fs_info['flags'].append(fs_info['flags'][j])
+
                 if self.get_B:
                     self.__B = np.concatenate((self.__B, 
                                             new_B[..., np.newaxis]), 
@@ -146,6 +162,16 @@ class FieldLineHandler:
                     self.__B = np.squeeze(self.__B)
                 if self.get_gradB:
                     self.__gradB = np.squeeze(self.__gradB)
+
+    def __read_fs_info(self, file):
+        fs_info = readsav(file)
+        needed_info = {}
+        needed_info['iota'] = fs_info['fs_info'][0][3]
+        needed_info['reff'] = fs_info['fs_info'][0][4]
+        needed_info['separatrix'] = fs_info['fs_info'][0][6]
+        needed_info['names'] = fs_info['fs_info'][0][7]
+        needed_info['flags'] = fs_info['fs_info'][0][8]
+        return needed_info
 
     def __return_lines_from_surf(self, surf_no, lines_no, tor_range):
         """
@@ -227,6 +253,12 @@ class FieldLineHandler:
         Returnes stored data
         """
         return self.__gradB
+
+    def return_fs_info(self):
+        """
+        Returnes stored data
+        """
+        return self.__fs_info
 
 def process_selection(selected):
     """
