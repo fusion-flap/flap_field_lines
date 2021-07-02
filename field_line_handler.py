@@ -27,14 +27,31 @@ class FieldLineHandler:
           and toroidal coordinates
     """
     def __init__(self, 
+                 path='/data/W7-X/processed_data/flux_surfaces/%s+252_detailed_w_o_limiters_w_o_torsion', 
+                 configuration='EIM'):
+        """
+        TBD
+        """
+        self.path = path
+        if configuration in ('EIM', 'FTM', 'KJM001'):
+            try:
+                self.file = self.file % configuration 
+            except TypeError:
+                pass
+            fs_info = self.file + '/fs_info.sav'
+        else:
+            raise WrongConfigurationError(configuration)
+        self.__fs_info = self.__read_fs_info(fs_info)
+
+    def __something_else(self, 
                  path='/data/W7-X/processed_data/flux_surfaces/%s+252_detailed_w_o_limiters_w_o_torsion/field_lines', 
                  configuration='EIM', 
                  surface=None, 
                  lines=None, 
                  tor_range=None, 
                  direction='forward',
-                 getB = False,
-                 gradB = False):
+                 getB=False,
+                 gradB=False):
         """
         Constructor of the class. Its inputs are:
         path: Where the precalculated field lines are stored.
