@@ -5,6 +5,7 @@ Created on Tue May 31 2021
 @author: lordofbejgli
 """
 
+from typing import get_args
 import numpy as np
 import os
 
@@ -26,22 +27,196 @@ class FieldLineHandler:
         - 2nd and 3rd: poloidal (if multiple lines are selected per surface) 
           and toroidal coordinates
     """
+    __valid_configs = ('EIM', 'FTM', 'KJM001')
+
     def __init__(self, 
-                 path='/data/W7-X/processed_data/flux_surfaces/%s+252_detailed_w_o_limiters_w_o_torsion', 
-                 configuration='EIM'):
+                 path=None, 
+                 configuration=None):
         """
         TBD
         """
-        self.path = path
-        if configuration in ('EIM', 'FTM', 'KJM001'):
-            try:
-                self.file = self.file % configuration 
-            except TypeError:
-                pass
-            fs_info = self.file + '/fs_info.sav'
+        if path is None:
+            self.path = '/data/W7-X/processed_data/flux_surfaces/%s+252_detailed_w_o_limiters_w_o_torsion'
+            if configuration in self.__valid_configs:
+                try:
+                    self.path = self.path % configuration 
+                except TypeError:
+                    pass
+                fs_info = self.path + '/fs_info.sav'
+                if not os.path.isfile(fs_info):
+                    raise NoFsInfoError
+            else:
+                raise WrongConfigurationError(configuration)
         else:
-            raise WrongConfigurationError(configuration)
+            self.path = path.replace('/fs_info.sav', '')
+            fs_info = path
+        self.configuration = configuration
         self.__fs_info = self.__read_fs_info(fs_info)
+        self.__field_lines = []
+        self.__B = None
+        self.__gradB = None
+        self.surfaces = []
+        self.surface_files = []
+        self.read_files = []
+        self.lines = None
+        self.tor_range = None
+        self.direction = None
+
+    def __read_fs_info(self, file):
+        fs_info = readsav(file)
+        needed_info = {}
+        needed_info['iota'] = fs_info['fs_info'][0][3]
+        needed_info['reff'] = fs_info['fs_info'][0][4]
+        needed_info['separatrix'] = fs_info['fs_info'][0][6]
+        needed_info['names'] = fs_info['fs_info'][0][7]
+        needed_info['flags'] = fs_info['fs_info'][0][8]
+        return needed_info
+
+    def update_read_parameters(self, 
+                 path=None, 
+                 surfaces=None, 
+                 lines=None, 
+                 tor_range=None, 
+                 direction='forward'):
+
+        if direction in ('forward', 'backward', 'both'):
+            if direction != self.direction:
+                self.read_files = [False for i in range(len(self.read_files))]
+            self.direction = direction
+        else:
+            raise WrongDirectionError
+
+        if path:
+            self.path = path
+        else:
+            if os.path.exists(self.path + '/field_lines'):
+                self.path += '/field_lines'
+
+        if surfaces:
+            try:
+                surfaces = process_selection(surfaces)
+            except TypeError:
+                if not os.path.isfile(surfaces[0]):
+                    raise
+            else:
+                surf_files, surfaces = self.__create_surf_file_list(surfaces)
+        elif not self.surfaces:
+            surf_files, surfaces = self.__create_surf_file_list(range(len(self.__fs_info['iota'])))
+
+        self.surfaces += surfaces
+        self.surface_files += surf_files
+        self.read_files += [False for i in range(len(surfaces))]
+
+        if lines:
+            lines = process_selection(lines)
+            if lines != self.lines:
+                self.lines = lines
+                self.read_files += [False for i in range(len(self.surfaces))]
+
+        if tor_range:
+            tor_range = process_selection(tor_range)
+            if tor_range != self.tor_range:
+                self.tor_range = tor_range
+                self.read_files += [False for i in range(len(self.surfaces))]
+
+    def load_data(self, getB=False, getGradB=False):
+        pass
+
+    def __create_surf_file_list(self, surfs):
+        file = self.path + '/field_lines_tor_ang_1.85_1turn_%s+252_w_o_limiters_w_o_torsion_w_characteristics_surf_0'
+        file = file % self.configuration + '%s.sav'
+        file_list = []
+        surf_list = []
+
+        for i in surfs:
+            string_no = str(i)
+            if i < 10:
+                string_no = '0' + string_no
+            if os.path.isfile(file % string_no):
+                file_list.append(file % string_no)
+                surf_list.append(i)
+        
+        return file_list, surf_list
+
+    def __read_surf_files(self, file_list, get_fl=False, get_B=False, get_gradB=False):
+        surf = readsav(file_list[0])
+         #if no lines are specified, chooses all
+        if self.lines is None:
+            self.lines = range(len(surf['surface'][0][4]))
+
+        #if no toroidal range is specified, chooses all
+        if self.tor_range is None:
+            self.tor_range = range(len(surf['surface'][0][4][0]))
+
+        if get_fl:
+            field_lines = self.__extract_data_from_surf(surf, 4)
+
+        if get_B:
+            B = self.__extract_data_from_surf(surf, 10)
+
+        if get_gradB:
+            gradB = self.__extract_data_from_surf(surf, 16)
+        
+        if len(file_list) > 1:
+            if get_fl:
+                field_lines = field_lines[..., np.newaxis]
+            if get_B:
+                B = B[..., np.newaxis]
+            if get_gradB:
+                gradB = gradB[..., np.newaxis]
+        else:
+            return field_lines, B, gradB
+
+        for file in file_list[1:]:
+            surf = readsav(file)
+
+            if get_fl:
+                new = self.__extract_data_from_surf(surf, 4)
+                field_lines = np.concatenate((field_lines, 
+                                              new[..., np.newaxis]), 
+                                              axis=-1)
+            if get_B:
+                new = self.__extract_data_from_surf(surf, 10)
+                B = np.concatenate((B, new[..., np.newaxis]), axis=-1)
+            if get_gradB:
+                new = self.__extract_data_from_surf(surf, 16)
+                gradB = np.concatenate((gradB, new[..., np.newaxis]), axis=-1)
+
+        return field_lines, B, gradB
+
+    def __extract_data_from_surf(self, surf, index_no):
+        """
+        Returns requested data from a flux surface file. Acts as part of the 
+        constructor, not used by itself. Takes the surface number and the 
+        processed selections as input.
+        Raises "NoSurfaceFileError" if file not found.
+        """
+        data = []
+        if self.direction == 'forward':
+            #reads forward calculated field lines
+            data = np.array([surf['surface'][0][index_no][self.lines], 
+                             surf['surface'][0][index_no + 1][self.lines], 
+                             surf['surface'][0][index_no + 2][self.lines]])
+        elif self.direction == 'backward':
+            #reads backward calculated field lines
+            data = np.array([surf['surface'][0][index_no + 3][self.lines], 
+                             surf['surface'][0][index_no + 4][self.lines], 
+                             surf['surface'][0][index_no + 5][self.lines]])
+        elif self.direction == 'both':
+            #reads both. backward lines are erversed and placed in front of 
+            #forward lines
+            data = np.array([surf['surface'][0][index_no][self.lines], 
+                             surf['surface'][0][index_no + 1][self.lines], 
+                             surf['surface'][0][index_no + 2][self.lines]])
+            data = np.concatenate((np.array([surf['surface'][0][index_no + 3][self.lines, -1::-1], 
+                                             surf['surface'][0][index_no + 4][self.lines, -1::-1], 
+                                             surf['surface'][0][index_no + 5][self.lines, -1::-1]]), 
+                                             data), axis=2)
+        return data[:, :, self.tor_range]
+
+
+
+
 
     def __something_else(self, 
                  path='/data/W7-X/processed_data/flux_surfaces/%s+252_detailed_w_o_limiters_w_o_torsion/field_lines', 
@@ -179,16 +354,6 @@ class FieldLineHandler:
                     self.__B = np.squeeze(self.__B)
                 if self.get_gradB:
                     self.__gradB = np.squeeze(self.__gradB)
-
-    def __read_fs_info(self, file):
-        fs_info = readsav(file)
-        needed_info = {}
-        needed_info['iota'] = fs_info['fs_info'][0][3]
-        needed_info['reff'] = fs_info['fs_info'][0][4]
-        needed_info['separatrix'] = fs_info['fs_info'][0][6]
-        needed_info['names'] = fs_info['fs_info'][0][7]
-        needed_info['flags'] = fs_info['fs_info'][0][8]
-        return needed_info
 
     def __return_lines_from_surf(self, surf_no, lines_no, tor_range):
         """
