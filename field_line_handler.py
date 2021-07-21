@@ -52,7 +52,7 @@ class FieldLineHandler:
             fs_info = path
         self.configuration = configuration
         self.__fs_info = self.__read_fs_info(fs_info)
-        self.__field_lines = []
+        self.__field_lines = None
         self.__B = None
         self.__gradB = None
         self.surfaces = []
@@ -82,7 +82,7 @@ class FieldLineHandler:
 
         if direction in ('forward', 'backward', 'both'):
             if direction != self.direction:
-                self.read_files = [True for i in range(len(self.read_files))]
+                self.drop_data()
                 self.direction = direction
         else:
             raise WrongDirectionError
@@ -131,12 +131,12 @@ class FieldLineHandler:
                 self.read_files = [True for i in range(len(self.surfaces))]
 
     def load_data(self, getB=False, getGradB=False):
-        if self.__B:
+        if self.__B is not None:
             getB = True
         elif getB:
             self.drop_data()
 
-        if self.__gradB:
+        if self.__gradB is not None:
             getGradB = True
         elif getGradB:
             self.drop_data()
@@ -161,7 +161,7 @@ class FieldLineHandler:
 
     def drop_data(self):
         self.read_files = [True for i in range(len(self.surfaces))]
-        self.__field_lines = []
+        self.__field_lines = None
         self.__B = None
         self.__gradB = None
     
