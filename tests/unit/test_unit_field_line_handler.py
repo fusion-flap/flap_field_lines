@@ -31,6 +31,8 @@ class TestAccessories(unittest.TestCase):
         self.assertRaises(TypeError, process_selection, 3.75)
         self.assertRaises(TypeError, process_selection, (1, 3.2))
         self.assertRaises(ValueError, process_selection, 'retek')
+        self.assertRaises(ValueError, process_selection, '5')
+        self.assertRaises(ValueError, process_selection, '5:10:2:3')
 
 class TestFieldLineHandlerConstructor(unittest.TestCase):
     """
@@ -70,6 +72,29 @@ class TestFieldLineHandlerFunctions(unittest.TestCase):
         self.assertEqual(surfs, [30, 40])
         self.assertEqual(len(files), 2)
         self.assertEqual(files[0], '/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_030.sav')
+
+    @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
+    def test_update_read_parameters_errors(self):
+        self.assertRaises(WrongDirectionError, self.handler.update_read_parameters, direction='retek')
+        self.assertRaises(ValueError, self.handler.update_read_parameters, surfaces='retek')
+        self.assertRaises(ValueError, self.handler.update_read_parameters, surfaces='3:4:12:b')
+        
+    @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
+    def test_update_read_parameters_file_selection(self):    
+        expected_files = ['/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_030.sav',
+                          '/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_040.sav'] 
+        self.handler.update_read_parameters()
+        self.assertEqual(len(self.handler.return_surface_files()), 2)
+        self.handler.update_read_parameters(surfaces=[30, 40])
+        self.assertEqual(self.handler.return_surface_files(), expected_files)
+        self.handler.update_read_parameters(surfaces=expected_files)
+        self.assertEqual(self.handler.return_surface_files(), expected_files)
+        self.handler.update_read_parameters()
+        self.assertEqual(len(self.handler.return_surface_files()), 2)
+        self.handler.update_read_parameters(surfaces=[30])
+        self.assertEqual(len(self.handler.return_surface_files()), 1)
+        self.handler.update_read_parameters(surfaces=40, drop_data=False)
+        self.assertEqual(len(self.handler.return_surface_files()), 2)
 
 
 if __name__ == '__main__':

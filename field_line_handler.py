@@ -83,7 +83,7 @@ class FieldLineHandler:
         if direction in ('forward', 'backward', 'both'):
             if direction != self.direction:
                 self.read_files = [True for i in range(len(self.read_files))]
-            self.direction = direction
+                self.direction = direction
         else:
             raise WrongDirectionError
 
@@ -96,17 +96,22 @@ class FieldLineHandler:
         if surfaces:
             try:
                 surfaces = process_selection(surfaces)
-            except TypeError:
+            except (TypeError, ValueError):
                 if not os.path.isfile(surfaces[0]):
                     raise
+                surf_files = surfaces
             else:
                 surf_files, surfaces = self.create_surf_file_list(surfaces)
         elif not self.surfaces:
             surf_files, surfaces = self.create_surf_file_list(range(len(self.__fs_info['iota'])))
+        else:
+            surf_files = []
+            surfaces = []
 
         if drop_data:
-            self.surfaces = surfaces
-            self.surface_files = surf_files
+            if surfaces:
+                self.surfaces = surfaces
+                self.surface_files = surf_files
             self.drop_data()
         else:
             self.surfaces += surfaces
@@ -117,13 +122,13 @@ class FieldLineHandler:
             lines = process_selection(lines)
             if lines != self.lines:
                 self.lines = lines
-                self.read_files += [True for i in range(len(self.surfaces))]
+                self.read_files = [True for i in range(len(self.surfaces))]
 
         if tor_range:
             tor_range = process_selection(tor_range)
             if tor_range != self.tor_range:
                 self.tor_range = tor_range
-                self.read_files += [True for i in range(len(self.surfaces))]
+                self.read_files = [True for i in range(len(self.surfaces))]
 
     def load_data(self, getB=False, getGradB=False):
         if self.__B:
@@ -277,6 +282,9 @@ class FieldLineHandler:
         """
         return self.__fs_info
 
+    def return_surface_files(self):
+        return self.surface_files
+
 def process_selection(selected):
     """
     Processes selection. Either returnes a list in case of single or mutiple 
@@ -290,8 +298,11 @@ def process_selection(selected):
     elif isinstance(selected, str):
         #returns range if a string is specified. string is broken up by ":"
         selected = selected.split(':')
-        first = int(selected[0])
-        last = int(selected[1])
+        try:
+            first = int(selected[0])
+            last = int(selected[1])
+        except (ValueError, IndexError):
+            raise ValueError('Input string should be of format from:to(:by).')
         if len(selected) == 3:
             #step bw elements is optional
             step = int(selected[2])
