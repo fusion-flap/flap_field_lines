@@ -122,13 +122,13 @@ class FieldLineHandler:
             lines = process_selection(lines)
             if lines != self.lines:
                 self.lines = lines
-                self.read_files = [True for i in range(len(self.surfaces))]
+                self.drop_data()
 
         if tor_range:
             tor_range = process_selection(tor_range)
             if tor_range != self.tor_range:
                 self.tor_range = tor_range
-                self.read_files = [True for i in range(len(self.surfaces))]
+                self.drop_data()
 
     def load_data(self, getB=False, getGradB=False):
         if self.__B is not None:
@@ -150,6 +150,13 @@ class FieldLineHandler:
             self.__B = B
             self.__gradB = grad_B
         else:
+            if self.__field_lines.ndim < field_lines.ndim:
+                self.__field_lines = self.__field_lines[..., np.newaxis]
+                if self.__B is not None:
+                    self.__B = self.__B[..., np.newaxis]
+                if self.__gradB is not None:
+                    self.__gradB = self.__gradB[..., np.newaxis]
+
             self.__field_lines = np.concatenate((self.__field_lines, 
                                                  field_lines), axis=-1)
             if getB:

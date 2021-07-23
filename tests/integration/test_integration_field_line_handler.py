@@ -80,13 +80,30 @@ class TestLoadingData(unittest.TestCase):
 
         self.handler.update_read_parameters(surfaces=(25, 30, 35), lines=self.lines,
                                             tor_range=self.tor_range)
-        self.handler.load_data()
+        self.handler.load_data(getB=True)
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10))
+        self.assertEqual(self.handler.return_B().shape, (3, 4, 10))
+
+        self.handler.update_read_parameters(surfaces=40, lines=self.lines,
+                                            tor_range=self.tor_range, drop_data=False)
+        self.handler.load_data()
+        self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
+        self.assertEqual(self.handler.return_B().shape, (3, 4, 10, 2))
 
         self.handler.update_read_parameters(surfaces="30:41:5", lines=self.lines,
                                             tor_range=self.tor_range)
         self.handler.load_data()
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
+
+        self.handler.load_data(getB=True)
+        self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
+        self.assertEqual(self.handler.return_B().shape, (3, 4, 10, 2))
+        self.assertEqual(self.handler.return_gradB(), None)
+
+        self.handler.load_data(getGradB=True)
+        self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
+        self.assertEqual(self.handler.return_B().shape, (3, 4, 10, 2))
+        self.assertEqual(self.handler.return_gradB().shape, (3, 4, 10, 2))
 
         fs_info = self.handler.return_fs_info()
         self.assertTrue(np.array_equal(fs_info['separatrix'], [83, 43, 55, 65, 76, 87]))
