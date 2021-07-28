@@ -16,42 +16,53 @@ class FieldLineHandler:
     """
     This class reads and stores field lines of various flux surfaces from the 
     given .sav files. In its current form, it's equipped to handle W7X field 
-    lines. Onew .sav file contains the forward and backward calculated field 
-    lines of one flux surface. Typically there's 360 field line per surface, 
+    lines. One .sav file contains the forward and backward calculated field 
+    lines of one flux surface. Typically there is 360 field lines per surface, 
     which are 3651 bin long. Results are stored in an numpy array. It can be 
-    accessed via the get_field_lines() function.
+    accessed via the return_field_lines() function. The magnetic field and 
+    its gradient may optionally be read from these file as well and store in 
+    separate arrays. The constructor reads some data about the surfaces from 
+    the fs_info.sav file. 
 
-    Stored array may have 2, 3 or 4 dimensions. Thes are:
+    Stored numpy array may have 2, 3 or 4 dimensions. These are:
         - 1st dimension: 3 long, x, y, z coordinates
         - last dimension: flux surface coordinate if there's more
         - 2nd and 3rd: poloidal (if multiple lines are selected per surface) 
           and toroidal coordinates
+    These arrays can be directly projected to image coordinates by the 
+    ImageProjector class.
     """
+    #W7X magnetic configs
     __valid_configs = ('EIM', 'FTM', 'KJM001')
 
     def __init__(self, 
                  path=None, 
                  configuration=None):
         """
-        TBD
+        Constructor. Inputs:
+        path: path to fs_info.sav. If None is given, default vaue is used
+        configuration: W7X magnetic config name. Currently there are 3 valid 
+                       options.
+        
+        Raises: NoFsInfoError and WrongConfigurationError.
         """
         if path is None:
+            #default path
             self.path = '/data/W7-X/processed_data/flux_surfaces/%s+252_detailed_w_o_limiters_w_o_torsion'
             if configuration in self.__valid_configs:
-                try:
-                    self.path = self.path % configuration 
-                except TypeError:
-                    pass
-                fs_info = self.path + '/fs_info.sav'
-                if not os.path.isfile(fs_info):
+                self.path = self.path % configuration 
+                #default path for fs_info.sav
+                path = self.path + '/fs_info.sav'
+                #Raise error if not found
+                if not os.path.isfile(path):
                     raise NoFsInfoError
             else:
                 raise WrongConfigurationError(configuration)
         else:
+            #if path for fs_info was give, set path for its root folder
             self.path = path.replace('/fs_info.sav', '')
-            fs_info = path
         self.configuration = configuration
-        self.__fs_info = self.__read_fs_info(fs_info)
+        self.__fs_info = self.__read_fs_info(path)
         self.__field_lines = None
         self.__B = None
         self.__gradB = None
@@ -63,6 +74,13 @@ class FieldLineHandler:
         self.direction = None
 
     def __read_fs_info(self, file):
+        '''
+        Reads data from fs_info file. It takes the iota of each eligible flux 
+        surface for the given magnetic configuration. Effective radius of the 
+        surfaces. The surface number of the separatrix for the main plasma and 
+        islands. Names of the islands. Flag of which surfaces belongs to which 
+        island.
+        '''
         fs_info = readsav(file)
         needed_info = {}
         needed_info['iota'] = fs_info['fs_info'][0][3]
@@ -79,8 +97,37 @@ class FieldLineHandler:
                  tor_range=None, 
                  direction='forward',
                  drop_data=True):
+        """
+        Updates the parameters for reading data. Here can be set which flux 
+        surfaces are to be read, which lines and at what toroidal range. Files 
+        of flux surfaces can be directly given as a list of strings in 
+        'surfaces', or can be infered from the specified surface numbers (also 
+        in 'surfaces') and 'self.path'. If 'path' is specified here, self.path 
+        is set to it, otherwise it is derived from the path of the fs_info file. 
+        Surfaces files are looked for in fs_info's folder, unless there's a 
+        'field_line' folder is present, in which case there.
 
+        parameters:
+        path: where to look for the surface files; ignored if specific files 
+            (with full path) are given in surfaces
+        surfaces: selection of surfaces to read. it can be of various format:
+            - single int
+            - enumeration of ints in an iterable container
+            - string: python range format: 'from:to(:by)'
+            - list of string, each is a filename with full path
+        lines: which field lines to read from the surfaces (usually 360 per 
+            field line). format:
+            - single int
+            - enumeration of ints in an iterable container
+            - string: from:to(:by)
+        tor_range: which part of field lines to read (one line is usually 3651 
+            bin long). same format as lines
+        directin: which direction of field lines to read. Can be 
+            forward, backward or both
+        drop_data: overwrite if True or extend existing data if False
+        """
         if direction in ('forward', 'backward', 'both'):
+            #if the direction is changed, drop existing data and reread all
             if direction != self.direction:
                 self.drop_data()
                 self.direction = direction
@@ -88,23 +135,36 @@ class FieldLineHandler:
             raise WrongDirectionError
 
         if path:
+            #if path is given, self.path is overwritten
             self.path = path
         else:
+            #if not, and self.path/field_lines exists it is used
             if os.path.exists(self.path + '/field_lines'):
                 self.path += '/field_lines'
 
-        if surfaces:
+        if surfaces is not None:
             try:
+                #if surfaces is given, extract a list of surfaces to be read
                 surfaces = process_selection(surfaces)
             except (TypeError, ValueError):
+                #if an error of these kind occurs, check if surfaces is a list 
+                #of filenames. if not reraise error, otherwise use it.
                 if not os.path.isfile(surfaces[0]):
                     raise
                 surf_files = surfaces
+                #create a list of surfaces from the filenames
+                surfaces = self.create_surf_list(surfaces)
             else:
+                #if the list of surfaces is successfully processed, use it to 
+                #create a list of files to be read
                 surf_files, surfaces = self.create_surf_file_list(surfaces)
         elif not self.surfaces:
+            #if surfaces is not specified and there are no surfaces already 
+            #selected, select all according to fs_info
             surf_files, surfaces = self.create_surf_file_list(range(len(self.__fs_info['iota'])))
         else:
+            #if nothing is given and there are already selected surfaces, do 
+            #nothing
             surf_files = []
             surfaces = []
 
@@ -114,10 +174,13 @@ class FieldLineHandler:
                 self.surface_files = surf_files
             self.drop_data()
         else:
+            #extend the list of files to read if drop_data is False
             self.surfaces += surfaces
             self.surface_files += surf_files
             self.read_files += [True for i in range(len(surfaces))]
 
+        #if new lines or range is to be read, drop all data and reread it along 
+        #with the new data
         if lines:
             lines = process_selection(lines)
             if lines != self.lines:
@@ -173,7 +236,7 @@ class FieldLineHandler:
         self.__gradB = None
     
     def create_surf_file_list(self, surfs):
-        file = self.path + '/field_lines_tor_ang_1.85_1turn_%s+252_w_o_limiters_w_o_torsion_w_characteristics_surf_0'
+        file = self.path + '/field_lines_tor_ang_1.85_1turn_%s+252_w_o_limiters_w_o_torsion_w_characteristics_surf_'
         file = file % self.configuration + '%s.sav'
         file_list = []
         surf_list = []
@@ -181,12 +244,21 @@ class FieldLineHandler:
         for i in surfs:
             string_no = str(i)
             if i < 10:
+                string_no = '00' + string_no
+            elif i < 100:
                 string_no = '0' + string_no
             if os.path.isfile(file % string_no):
                 file_list.append(file % string_no)
                 surf_list.append(i)
         
         return file_list, surf_list
+
+    def create_surf_list(self, file_list):
+        surfs = []
+        for i in file_list:
+            surfs.append(int(i.split('_')[-1][0:3]))
+        pass
+        return surfs
 
     def __read_surf_files(self, index, get_B=False, get_gradB=False):
         surf = readsav(self.surface_files[index])

@@ -74,6 +74,14 @@ class TestFieldLineHandlerFunctions(unittest.TestCase):
         self.assertEqual(files[0], '/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_030.sav')
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
+    def test_create_surf_list(self):
+        files = ['/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_030.sav',
+                 '/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_040.sav']
+        surfs = self.handler.create_surf_list(files)
+        self.assertEqual([30, 40], surfs)
+
+
+    @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_update_read_parameters_errors(self):
         self.assertRaises(WrongDirectionError, self.handler.update_read_parameters, direction='retek')
         self.assertRaises(ValueError, self.handler.update_read_parameters, surfaces='retek')
