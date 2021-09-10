@@ -7,7 +7,7 @@ Created on Tue May 31 2021
 
 from typing import get_args
 import numpy as np
-import optparse
+import os
 
 from scipy.io import readsav
 
