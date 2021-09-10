@@ -7,14 +7,11 @@ Created on Tue May 31 2021
 
 from typing import get_args
 import numpy as np
-import os
-import sys
+import optparse
 
 from scipy.io import readsav
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-from errors import *
+from .errors import *
 
 class FieldLineHandler:
     """
