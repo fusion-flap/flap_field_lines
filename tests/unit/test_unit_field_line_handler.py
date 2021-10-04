@@ -8,7 +8,7 @@ Created on Tue June 4 2021
 import unittest
 
 from flap_field_lines.field_line_handler import *
-from errors import *
+from flap_field_lines.errors import *
 
 class TestAccessories(unittest.TestCase):
     """
