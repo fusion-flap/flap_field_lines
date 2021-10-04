@@ -306,26 +306,28 @@ def save_reference_points(file, points):
     """
     np.savetxt(file, points.T, fmt='%.10f', delimiter='\t')
 
-def get_field_lines(surf, folder):
+def get_field_lines(surf, folder, direction='forward'):
     """
     Read field lines from file.
     surf: Which flux surface the plotted fiel line belong to.
     folder: Path to source files.
     """
     surf = readsav(folder + '/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_0%d.sav' % surf)
-    line_f = np.array([surf['surface'][0][4], surf['surface'][0][5], surf['surface'][0][6]])
+    if direction == 'backward':
+        line_f = np.array([surf['surface'][0][7], surf['surface'][0][8], surf['surface'][0][9]])
+    else:
+        line_f = np.array([surf['surface'][0][4], surf['surface'][0][5], surf['surface'][0][6]])
     return line_f
 
-def plot_field_lines(surf, folder, color='k'):
+def plot_field_lines(surf, folder, color='k', direction='forward'):
     """
     Plot 3d field lines.
     surf: Which flux surface the plotted fiel line belong to.
     folder: Path to source files.
     color: Color of the plotted lines.
     """
-    line_f = get_field_lines(surf, folder)
+    line_f = get_field_lines(surf, folder, direction)
 
-    plt.figure()
     plt.gca(projection='3d')
 
     for i in range(0, 360, 30):
