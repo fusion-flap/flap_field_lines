@@ -87,6 +87,7 @@ class FieldLineHandler:
         needed_info['reff'] = fs_info['fs_info'][0][4]
         needed_info['separatrix'] = fs_info['fs_info'][0][6]
         needed_info['names'] = fs_info['fs_info'][0][7]
+        needed_info['names'][0] = b'main plasma'
         needed_info['flags'] = fs_info['fs_info'][0][8]
         return needed_info
 
