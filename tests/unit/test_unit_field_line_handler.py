@@ -9,7 +9,11 @@ import unittest
 
 from flap_field_lines.field_line_handler import *
 from flap_field_lines.errors import *
-from ..config import data_path
+
+try:
+    from ..config import data_path
+except ImportError:
+    from ..config_default import data_path  
 
 class TestAccessories(unittest.TestCase):
     """

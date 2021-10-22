@@ -10,7 +10,11 @@ import os
 import numpy as np
 
 from flap_field_lines.field_line_handler import *
-from ..config import data_path
+
+try:
+    from ..config import data_path
+except ImportError:
+    from ..config_default import data_path  
 
 class TestLoadingData(unittest.TestCase):
     """
