@@ -55,6 +55,7 @@ class TestFieldLineHandlerConstructor(unittest.TestCase):
         handler = FieldLineHandler(data_path)
         fs = handler.return_fs_info()
         self.assertEqual(fs['iota'].shape, (95,))
+        self.assertTrue(os.path.exists(handler.path))
 
 class TestFieldLineHandlerFunctions(unittest.TestCase):
     """
@@ -78,7 +79,6 @@ class TestFieldLineHandlerFunctions(unittest.TestCase):
                  '/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_040.sav']
         surfs = self.handler.create_surf_list(files)
         self.assertEqual([30, 40], surfs)
-
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_update_read_parameters_errors(self):
