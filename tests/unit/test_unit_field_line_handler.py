@@ -52,7 +52,7 @@ class TestFieldLineHandlerConstructor(unittest.TestCase):
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_constructor(self):
-        handler = FieldLineHandler(self.data_path)
+        handler = FieldLineHandler(data_path)
         fs = handler.return_fs_info()
         self.assertEqual(fs['iota'].shape, (95,))
 
@@ -62,7 +62,7 @@ class TestFieldLineHandlerFunctions(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.handler = FieldLineHandler(self.data_path, 'EIM')
+        self.handler = FieldLineHandler(data_path, 'EIM')
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_create_surf_file_list(self):

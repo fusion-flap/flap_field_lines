@@ -31,7 +31,7 @@ class TestLoadingData(unittest.TestCase):
         """
         self.lines = (5, 60, 120, 240)
         self.tor_range = '0:500:50'
-        self.handler = FieldLineHandler(self.data_path, configuration='EIM')
+        self.handler = FieldLineHandler(data_path, configuration='EIM')
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_reading_all_lines(self):
