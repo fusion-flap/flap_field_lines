@@ -22,7 +22,7 @@ class TestAccessories(unittest.TestCase):
         Checks for proper exceptions in the case of non-int input and 
         improper string format.
         """
-        self.assertEquals([5], process_selection(5))
+        self.assertEqual([5], process_selection(5))
         self.assertEqual(range(3, 7), process_selection('3:7'))
         self.assertEqual(range(3, 20, 5), process_selection('3:20:5'))
         self.assertListEqual([3, 8, 13], process_selection([3, 8, 13]))
