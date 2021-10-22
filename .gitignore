@@ -131,3 +131,6 @@ dmypy.json
 #VSCode workspace files
 .vscode
 *.code-workspace
+
+#Files relate t local execution
+tests/config.py

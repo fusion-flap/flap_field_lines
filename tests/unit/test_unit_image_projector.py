@@ -270,8 +270,8 @@ class TestImageProjector(unittest.TestCase):
                                     msg="Interjection is not projected to offset.")
         self.assertAlmostEqual(np.linalg.norm(x2 - offset) / np.linalg.norm(x1), 
                                enh, msg="Enlargement doesn't work properly.")
-        self.assertAlmostEqual(np.arccos(x1.T @ (x2 - offset) /  
-                              (np.linalg.norm(x2 - offset) * np.linalg.norm(x1))),
+        self.assertAlmostEqual(float(np.arccos(x1.T @ (x2 - offset) /  
+                              (np.linalg.norm(x2 - offset) * np.linalg.norm(x1)))),
                               alpha, msg="Rotation doesn't work properly.")
 
 class TestProjectionUpdate(unittest.TestCase):

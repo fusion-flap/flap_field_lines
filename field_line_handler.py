@@ -33,7 +33,7 @@ class FieldLineHandler:
     ImageProjector class.
     """
     #W7X magnetic configs
-    __valid_configs = ('EIM', 'FTM', 'KJM001')
+    __valid_configs = ('EIM', 'FTM', 'KJM001', 'EJM')
 
     def __init__(self, 
                  path=None, 
@@ -61,6 +61,9 @@ class FieldLineHandler:
         else:
             #if path for fs_info was give, set path for its root folder
             self.path = path.replace('/fs_info.sav', '')
+            #if self.path/field_lines exists, it is used as default
+            if os.path.exists(self.path + '/field_lines'):
+                self.path += '/field_lines'
         self.configuration = configuration
         self.__fs_info = self.__read_fs_info(path)
         self.__field_lines = None
@@ -87,6 +90,7 @@ class FieldLineHandler:
         needed_info['reff'] = fs_info['fs_info'][0][4]
         needed_info['separatrix'] = fs_info['fs_info'][0][6]
         needed_info['names'] = fs_info['fs_info'][0][7]
+        needed_info['names'][0] = b'main plasma'
         needed_info['flags'] = fs_info['fs_info'][0][8]
         return needed_info
 
@@ -137,10 +141,6 @@ class FieldLineHandler:
         if path:
             #if path is given, self.path is overwritten
             self.path = path
-        else:
-            #if not, and self.path/field_lines exists it is used
-            if os.path.exists(self.path + '/field_lines'):
-                self.path += '/field_lines'
 
         if surfaces is not None:
             try:
@@ -257,7 +257,6 @@ class FieldLineHandler:
         surfs = []
         for i in file_list:
             surfs.append(int(i.split('_')[-1][0:3]))
-        pass
         return surfs
 
     def __read_surf_files(self, index, get_B=False, get_gradB=False):
@@ -363,6 +362,9 @@ class FieldLineHandler:
 
     def return_surface_files(self):
         return self.surface_files
+
+    def return_surfaces(self):
+        return self.surfaces
 
 def process_selection(selected):
     """

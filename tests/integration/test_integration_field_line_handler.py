@@ -10,6 +10,7 @@ import os
 import numpy as np
 
 from flap_field_lines.field_line_handler import *
+from ..config import data_path
 
 class TestLoadingData(unittest.TestCase):
     """
@@ -21,7 +22,6 @@ class TestLoadingData(unittest.TestCase):
     location.
     """
     #Give flux surface files location here
-    data_path = '/media/data/w7x_flux_surfaces/test/fs_info.sav'
 
     def setUp(self) -> None:
         """
@@ -31,7 +31,7 @@ class TestLoadingData(unittest.TestCase):
         """
         self.lines = (5, 60, 120, 240)
         self.tor_range = '0:500:50'
-        self.handler = FieldLineHandler(self.data_path, configuration='EIM')
+        self.handler = FieldLineHandler(data_path, configuration='EIM')
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_reading_all_lines(self):
@@ -73,12 +73,12 @@ class TestLoadingData(unittest.TestCase):
         Checks reading from multiple files. Also tests correct behaviour if 
         some files are not found. Checks if fs_info is properly read.
         """
-        self.handler.update_read_parameters(lines=self.lines,
+        self.handler.update_read_parameters(surfaces=(30, 40), lines=self.lines,
                                             tor_range=self.tor_range)
         self.handler.load_data()
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
 
-        self.handler.update_read_parameters(surfaces=(25, 30, 35), lines=self.lines,
+        self.handler.update_read_parameters(surfaces=(97, 30, 98), lines=self.lines,
                                             tor_range=self.tor_range)
         self.handler.load_data(getB=True)
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10))
@@ -90,7 +90,7 @@ class TestLoadingData(unittest.TestCase):
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
         self.assertEqual(self.handler.return_B().shape, (3, 4, 10, 2))
 
-        self.handler.update_read_parameters(surfaces="30:41:5", lines=self.lines,
+        self.handler.update_read_parameters(surfaces="30:41:10", lines=self.lines,
                                             tor_range=self.tor_range)
         self.handler.load_data()
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
