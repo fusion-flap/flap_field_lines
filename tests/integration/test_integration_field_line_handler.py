@@ -90,7 +90,7 @@ class TestLoadingData(unittest.TestCase):
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
         self.assertEqual(self.handler.return_B().shape, (3, 4, 10, 2))
 
-        self.handler.update_read_parameters(surfaces="30:41:5", lines=self.lines,
+        self.handler.update_read_parameters(surfaces="30:41:10", lines=self.lines,
                                             tor_range=self.tor_range)
         self.handler.load_data()
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
