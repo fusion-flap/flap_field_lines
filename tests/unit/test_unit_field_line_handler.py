@@ -88,16 +88,16 @@ class TestFieldLineHandlerFunctions(unittest.TestCase):
         
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_update_read_parameters_file_selection(self):    
-        expected_files = ['/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_030.sav',
-                          '/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_040.sav'] 
+        expected_files = [self.handler.path + '/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_030.sav',
+                          self.handler.path + '/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_040.sav'] 
         self.handler.update_read_parameters()
-        self.assertEqual(len(self.handler.return_surface_files()), 2)
+        self.assertGreater(len(self.handler.return_surface_files()), 0)
         self.handler.update_read_parameters(surfaces=[30, 40])
         self.assertEqual(self.handler.return_surface_files(), expected_files)
         self.handler.update_read_parameters(surfaces=expected_files)
-        self.assertEqual(self.handler.return_surface_files(), expected_files)
+        self.assertEqual(self.handler.return_surfaces(), [30, 40])
         self.handler.update_read_parameters()
-        self.assertEqual(len(self.handler.return_surface_files()), 2)
+        self.assertGreater(len(self.handler.return_surface_files()), 0)
         self.handler.update_read_parameters(surfaces=[30])
         self.assertEqual(len(self.handler.return_surface_files()), 1)
         self.handler.update_read_parameters(surfaces=40, drop_data=False)

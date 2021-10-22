@@ -363,6 +363,9 @@ class FieldLineHandler:
     def return_surface_files(self):
         return self.surface_files
 
+    def return_surfaces(self):
+        return self.surfaces
+
 def process_selection(selected):
     """
     Processes selection. Either returnes a list in case of single or mutiple 
