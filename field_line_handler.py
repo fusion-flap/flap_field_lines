@@ -257,7 +257,6 @@ class FieldLineHandler:
         surfs = []
         for i in file_list:
             surfs.append(int(i.split('_')[-1][0:3]))
-        pass
         return surfs
 
     def __read_surf_files(self, index, get_B=False, get_gradB=False):

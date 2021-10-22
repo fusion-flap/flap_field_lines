@@ -70,7 +70,7 @@ class TestFieldLineHandlerFunctions(unittest.TestCase):
         files, surfs = self.handler.create_surf_file_list(surfs)
         self.assertEqual(surfs, [30, 40])
         self.assertEqual(len(files), 2)
-        self.assertEqual(files[0], '/media/data/w7x_flux_surfaces/test/field_lines_tor_ang_1.85_1turn_EIM+252_w_o_limiters_w_o_torsion_w_characteristics_surf_030.sav')
+        self.assertTrue(os.path.isfile(files[0]))
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_create_surf_list(self):
