@@ -9,6 +9,7 @@ import unittest
 
 from flap_field_lines.field_line_handler import *
 from flap_field_lines.errors import *
+from ..config import data_path
 
 class TestAccessories(unittest.TestCase):
     """
@@ -39,8 +40,7 @@ class TestFieldLineHandlerConstructor(unittest.TestCase):
     These tests check the FieldLineHandler constructor with various correct or 
     incorrect inputs.
     """
-    data_path = '/media/data/w7x_flux_surfaces/test/fs_info.sav'
-
+    
     def test_exceptions_raised(self):
         """
         Checks if proper exceptions are raised for faulty inputs and 
@@ -60,7 +60,6 @@ class TestFieldLineHandlerFunctions(unittest.TestCase):
     """
     TBD
     """
-    data_path = '/media/data/w7x_flux_surfaces/test/fs_info.sav'
 
     def setUp(self) -> None:
         self.handler = FieldLineHandler(self.data_path, 'EIM')

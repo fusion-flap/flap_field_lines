@@ -10,6 +10,7 @@ import os
 import numpy as np
 
 from flap_field_lines.field_line_handler import *
+from ..config import data_path
 
 class TestLoadingData(unittest.TestCase):
     """
@@ -21,7 +22,6 @@ class TestLoadingData(unittest.TestCase):
     location.
     """
     #Give flux surface files location here
-    data_path = '/media/data/w7x_flux_surfaces/test/fs_info.sav'
 
     def setUp(self) -> None:
         """
