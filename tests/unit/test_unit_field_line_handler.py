@@ -48,7 +48,7 @@ class TestFieldLineHandlerConstructor(unittest.TestCase):
         """
         self.assertRaises(WrongConfigurationError, FieldLineHandler, configuration='retek')
         self.assertRaises(FileNotFoundError, FieldLineHandler, path='retek')
-        self.assertRaises(NoFsInfoError, FieldLineHandler, configuration='EIM')
+        self.assertRaises(NoFsInfoError, FieldLineHandler, configuration='EJM')
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_constructor(self):

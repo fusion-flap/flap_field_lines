@@ -33,7 +33,7 @@ class FieldLineHandler:
     ImageProjector class.
     """
     #W7X magnetic configs
-    __valid_configs = ('EIM', 'FTM', 'KJM001')
+    __valid_configs = ('EIM', 'FTM', 'KJM001', 'EJM')
 
     def __init__(self, 
                  path=None, 
