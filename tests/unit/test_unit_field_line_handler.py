@@ -66,7 +66,7 @@ class TestFieldLineHandlerFunctions(unittest.TestCase):
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_create_surf_file_list(self):
-        surfs = process_selection('25:45')
+        surfs = process_selection((30, 40, 96))
         files, surfs = self.handler.create_surf_file_list(surfs)
         self.assertEqual(surfs, [30, 40])
         self.assertEqual(len(files), 2)
