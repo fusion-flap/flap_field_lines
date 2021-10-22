@@ -73,12 +73,12 @@ class TestLoadingData(unittest.TestCase):
         Checks reading from multiple files. Also tests correct behaviour if 
         some files are not found. Checks if fs_info is properly read.
         """
-        self.handler.update_read_parameters(lines=self.lines,
+        self.handler.update_read_parameters(surfaces=(30, 40), lines=self.lines,
                                             tor_range=self.tor_range)
         self.handler.load_data()
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10, 2))
 
-        self.handler.update_read_parameters(surfaces=(25, 30, 35), lines=self.lines,
+        self.handler.update_read_parameters(surfaces=(97, 30, 98), lines=self.lines,
                                             tor_range=self.tor_range)
         self.handler.load_data(getB=True)
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10))
