@@ -89,7 +89,7 @@ class ImageProjector:
         a text file of specific format.
         """
         if not file:
-            file = os.path.dirname(__file__) + '/views2.txt'
+            file = os.path.join(os.path.dirname(__file__), 'views2.txt')
         with open(file, 'r') as f:
             line = f.readline()
             is_view_valid = False
