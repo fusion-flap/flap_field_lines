@@ -241,6 +241,11 @@ class FieldLineHandler:
         file_list = []
         surf_list = []
 
+        if surfs is None:
+            file_list = [os.path.join(self.path, name) for name in os.listdir(self.path) if name.count('field_lines_tor_ang') > 0]
+            surf_list = self.create_surf_list(file_list)
+            return file_list, surf_list
+
         for i in surfs:
             string_no = str(i)
             if i < 10:
@@ -378,6 +383,8 @@ def process_selection(selected):
         return [selected]
     elif isinstance(selected, str):
         #returns range if a string is specified. string is broken up by ":"
+        if selected == ':':
+            return None
         selected = selected.split(':')
         try:
             first = int(selected[0])

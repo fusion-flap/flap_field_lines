@@ -30,6 +30,7 @@ class TestAccessories(unittest.TestCase):
         self.assertEqual([5], process_selection(5))
         self.assertEqual(range(3, 7), process_selection('3:7'))
         self.assertEqual(range(3, 20, 5), process_selection('3:20:5'))
+        self.assertEqual(None, process_selection(':'))
         self.assertListEqual([3, 8, 13], process_selection([3, 8, 13]))
         self.assertListEqual([3, 8, 13], process_selection((3, 8, 13)))
         self.assertRaises(TypeError, process_selection)
