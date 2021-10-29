@@ -62,8 +62,8 @@ class FieldLineHandler:
             #if path for fs_info was give, set path for its root folder
             self.path = os.path.dirname(path)
             #if self.path/field_lines exists, it is used as default
-            if os.path.exists(os.path.join(self.path, 'field_lines')):
-                self.path = os.path.join(self.path, 'field_lines')
+        if os.path.exists(os.path.join(self.path, 'field_lines')):
+            self.path = os.path.join(self.path, 'field_lines')
         self.configuration = configuration
         self.__fs_info = self.__read_fs_info(path)
         self.__field_lines = None
