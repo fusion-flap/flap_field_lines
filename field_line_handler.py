@@ -60,10 +60,10 @@ class FieldLineHandler:
                 raise WrongConfigurationError(configuration)
         else:
             #if path for fs_info was give, set path for its root folder
-            self.path = path.replace('/fs_info.sav', '')
+            self.path = os.path.dirname(path)
             #if self.path/field_lines exists, it is used as default
-            if os.path.exists(self.path + '/field_lines'):
-                self.path += '/field_lines'
+        if os.path.exists(os.path.join(self.path, 'field_lines')):
+            self.path = os.path.join(self.path, 'field_lines')
         self.configuration = configuration
         self.__fs_info = self.__read_fs_info(path)
         self.__field_lines = None
@@ -236,7 +236,7 @@ class FieldLineHandler:
         self.__gradB = None
     
     def create_surf_file_list(self, surfs):
-        file = self.path + '/field_lines_tor_ang_1.85_1turn_%s+252_w_o_limiters_w_o_torsion_w_characteristics_surf_'
+        file = os.path.join(self.path, 'field_lines_tor_ang_1.85_1turn_%s+252_w_o_limiters_w_o_torsion_w_characteristics_surf_')
         file = file % self.configuration + '%s.sav'
         file_list = []
         surf_list = []

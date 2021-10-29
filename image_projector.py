@@ -9,6 +9,7 @@ to image coordinates for various fast cameras used in fusion devices.
 (including EDICAM and Photron HDF5)
 """
 
+import os
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -82,11 +83,15 @@ class ImageProjector:
             self.__set_up_projection(enh, alpha, xoff, yoff)
     
     @classmethod
-    def from_file(cls, view, shot, cam, file):
+    def from_file(cls, view, shot, cam, file=None):
         """
         Alternate constructor that reads precalibrated parameters from 
         a text file of specific format.
         """
+        view = 'W7X-' + view.upper()
+
+        if not file:
+            file = os.path.join(os.path.dirname(__file__), 'views2.txt')
         with open(file, 'r') as f:
             line = f.readline()
             is_view_valid = False
