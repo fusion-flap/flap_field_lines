@@ -294,7 +294,7 @@ class TestProjectionUpdate(unittest.TestCase):
         """
         This test checks if enhancement, rotation and translation works well.
         """        
-        view = ImageProjector.from_file('W7X-AEQ31', '20160218', 'edicam', 
+        view = ImageProjector.from_file('aeq31', '20160218', 'edicam', 
                                         'views2.txt')
         
         view.update_projection(self.enh, self.alpha, 

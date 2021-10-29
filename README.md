@@ -7,7 +7,7 @@ view = ImageProjector.from_file(viewport, reference date, camera type, path to f
 
 e.g.
 
-view = ImageProjector.from_file('W7X-AEQ31', '20160218', 'edicam', 'views2.txt')
+view = ImageProjector.from_file('aeq31', '20160218', 'edicam', 'views2.txt')
 
 For the projection itself do the following (input should be a 2 or 3d array, with the first dimension being 3):
 

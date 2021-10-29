@@ -25,7 +25,7 @@ class TestOld(unittest.TestCase):
         """
         points = get_reference_points('tests/integration/fixtures/%s.dat' % view)
         points_ref = get_reference_points('tests/integration/fixtures/%s_ref.dat' % view)
-        view = ImageProjector.from_file('W7X-%s' % view.upper(), shot, cam, self.file)
+        view = ImageProjector.from_file(view, shot, cam, self.file)
 
         points = view.calc_pixel_coord(points)
         
@@ -55,7 +55,7 @@ class TestOld(unittest.TestCase):
         cam = 'edicam'
         points = get_reference_points('tests/integration/fixtures/%s.dat' % view)
         points_ref = get_reference_points('tests/integration/fixtures/%s_ref.dat' % view)
-        view = ImageProjector.from_file('W7X-%s' % view.upper(), shot, cam, self.file)
+        view = ImageProjector.from_file(view, shot, cam, self.file)
         
         #This view needs and extra 180 degree rotation to match the calib image.
         view.update_projection(alpha=np.pi)
@@ -140,7 +140,7 @@ class Test3dInput(unittest.TestCase):
         points_ref = np.load(path + '3d_test_array_ref.npy', 
                              allow_pickle=False)
 
-        view = ImageProjector.from_file('W7X-AEQ31', '20160218', 'edicam', 
+        view = ImageProjector.from_file('aeq31', '20160218', 'edicam', 
                                         'views2.txt')
         
         points = view.calc_pixel_coord(points)
