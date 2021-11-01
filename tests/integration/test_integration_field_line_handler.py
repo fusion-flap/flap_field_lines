@@ -7,6 +7,7 @@ Created on Tue June 22 2021
 
 import unittest
 import os
+import re
 import numpy as np
 
 from flap_field_lines.field_line_handler import *
@@ -57,7 +58,9 @@ class TestLoadingData(unittest.TestCase):
         """
         Testing the use of ':' as a selector.
         """
-        number_of_surfs = len([name for name in os.listdir(self.handler.path) if name.count('field_lines_tor_ang') > 0])
+        number_of_surfs = len([name for name in os.listdir(self.handler.path) 
+                              if name.count('field_lines_tor_ang') > 0 
+                              and re.search(r'_v[0-9].sav', name) is None])
         self.handler.update_read_parameters(surfaces=':')
         self.assertEqual(number_of_surfs,len(self.handler.surfaces))
         self.handler.update_read_parameters(surfaces=30, lines=':', tor_range=':')
