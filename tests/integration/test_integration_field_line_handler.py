@@ -7,6 +7,7 @@ Created on Tue June 22 2021
 
 import unittest
 import os
+import re
 import numpy as np
 
 from flap_field_lines.field_line_handler import *
@@ -51,6 +52,27 @@ class TestLoadingData(unittest.TestCase):
         self.handler.load_data(getGradB=True)
         self.assertEqual(self.handler.return_gradB().shape, (3, 360, 3651))
         self.assertEqual(self.handler.return_B().shape, (3, 360, 3651))
+
+    @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
+    def test_reading_all_by_using_colon(self):
+        """
+        Testing the use of ':' as a selector.
+        """
+        number_of_surfs = len([name for name in os.listdir(self.handler.path) 
+                              if name.count('field_lines_tor_ang') > 0 
+                              and re.search(r'_v[0-9].sav', name) is None])
+        self.handler.update_read_parameters(surfaces=':')
+        self.assertEqual(number_of_surfs,len(self.handler.surfaces))
+        self.handler.update_read_parameters(surfaces=30, lines=':', tor_range=':')
+        self.handler.load_data()
+        self.assertEqual(self.handler.return_field_lines().shape, (3, 360, 3651))
+        self.handler.load_data(getB=True)
+        self.assertEqual(self.handler.return_B().shape, (3, 360, 3651))
+        self.assertEqual(self.handler.return_gradB(), None)
+        self.handler.load_data(getGradB=True)
+        self.assertEqual(self.handler.return_gradB().shape, (3, 360, 3651))
+        self.assertEqual(self.handler.return_B().shape, (3, 360, 3651))
+
 
     @unittest.skipIf(not os.path.exists(data_path), "Skip if test data path is nonexistent.")
     def test_read_directions(self):
