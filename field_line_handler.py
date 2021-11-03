@@ -117,16 +117,20 @@ class FieldLineHandler:
         surfaces: selection of surfaces to read. it can be of various format:
             - single int
             - enumeration of ints in an iterable container
-            - string: python range format: 'from:to(:by)'
+            - string: 
+                - ':' to select all available
+                - python range format: 'from:to(:by)'
             - list of string, each is a filename with full path
         lines: which field lines to read from the surfaces (usually 360 per 
             field line). format:
             - single int
             - enumeration of ints in an iterable container
-            - string: from:to(:by)
+            - string: 
+                - ':' to select all available
+                - from:to(:by)
         tor_range: which part of field lines to read (one line is usually 3651 
             bin long). same format as lines
-        directin: which direction of field lines to read. Can be 
+        direction: which direction of field lines to read. Can be 
             forward, backward or both
         drop_data: overwrite if True or extend existing data if False
         """
@@ -372,7 +376,8 @@ class FieldLineHandler:
 def process_selection(selected):
     """
     Processes selection. Either returnes a list in case of single or mutiple 
-    specific selection, or a range if a range is specified.
+    specific selection, or a range if a range is specified. Returns None, in 
+    the case of a single ':' as input.
     Raises ValueError for wrong string format and TypeError if non-ints are given, 
     or something unexpected.
     """
