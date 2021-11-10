@@ -274,7 +274,10 @@ class FieldLineHandler:
 
         #if no toroidal range is specified, chooses all
         if self.tor_range is None:
-            self.tor_range = range(len(surf['surface'][0][4][0]))
+            if self.direction == 'both':
+                self.tor_range = range(2*len(surf['surface'][0][4][0]))
+            else:
+                self.tor_range = range(len(surf['surface'][0][4][0]))
 
         field_lines = self.__extract_data_from_surf(surf, 4)
 
