@@ -85,15 +85,18 @@ class ImageProjector:
             self.__set_up_projection(enh, alpha, xoff, yoff)
     
     @classmethod
-    def from_file(cls, view, shot, cam, file=None, transpose=False):
+    def from_file(cls, 
+                  view, 
+                  shot, 
+                  cam, 
+                  transpose=False, 
+                  file=os.path.join(os.path.dirname(__file__), 'views2.txt')):
         """
         Alternate constructor that reads precalibrated parameters from 
         a text file of specific format.
         """
         view = 'W7X-' + view.upper()
 
-        if not file:
-            file = os.path.join(os.path.dirname(__file__), 'views2.txt')
         with open(file, 'r') as f:
             line = f.readline()
             is_view_valid = False

@@ -294,8 +294,7 @@ class TestProjectionUpdate(unittest.TestCase):
         """
         This test checks if enhancement, rotation and translation works well.
         """        
-        view = ImageProjector.from_file('aeq31', '20160218', 'edicam', 
-                                        'views2.txt')
+        view = ImageProjector.from_file('aeq31', '20160218', 'edicam')
         
         view.update_projection(self.enh, self.alpha, 
                                self.offset[0, 0], self.offset[1, 0])
@@ -347,8 +346,7 @@ class TestProjectionUpdate(unittest.TestCase):
         This est checks if ImageProjector.transpose() works as intended, by 
         comparing transposed points to reference points.
         """
-        view = ImageProjector.from_file('aeq31', '20160218', 'edicam', 
-                                        'views2.txt', True)
+        view = ImageProjector.from_file('aeq31', '20160218', 'edicam', True)
         
         points_2 = view.calc_pixel_coord(self.points)
 

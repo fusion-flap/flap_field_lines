@@ -15,8 +15,6 @@ class TestOld(unittest.TestCase):
     This class of tests checks wether the legacy mode projects the reference 
     points of each camera view to the correct values.
     """
-    def setUp(self):
-        self.file='views2.txt'
 
     def compare_points(self, view, shot, cam):
         """
@@ -25,7 +23,7 @@ class TestOld(unittest.TestCase):
         """
         points = get_reference_points('tests/integration/fixtures/%s.dat' % view)
         points_ref = get_reference_points('tests/integration/fixtures/%s_ref.dat' % view)
-        view = ImageProjector.from_file(view, shot, cam, self.file)
+        view = ImageProjector.from_file(view, shot, cam)
 
         points = view.calc_pixel_coord(points)
         
@@ -55,7 +53,7 @@ class TestOld(unittest.TestCase):
         cam = 'edicam'
         points = get_reference_points('tests/integration/fixtures/%s.dat' % view)
         points_ref = get_reference_points('tests/integration/fixtures/%s_ref.dat' % view)
-        view = ImageProjector.from_file(view, shot, cam, self.file)
+        view = ImageProjector.from_file(view, shot, cam)
         
         #This view needs and extra 180 degree rotation to match the calib image.
         view.update_projection(alpha=np.pi)
@@ -140,8 +138,7 @@ class Test3dInput(unittest.TestCase):
         points_ref = np.load(path + '3d_test_array_ref.npy', 
                              allow_pickle=False)
 
-        view = ImageProjector.from_file('aeq31', '20160218', 'edicam', 
-                                        'views2.txt')
+        view = ImageProjector.from_file('aeq31', '20160218', 'edicam')
         
         points = view.calc_pixel_coord(points)
 
