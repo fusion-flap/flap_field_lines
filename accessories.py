@@ -33,8 +33,8 @@ def give_plot(xlim, ylim):
     plt.ylim(ylim)
     return fig
 
-def stamp_surfs(tor_r, color='y', direction='backward'):
-    _, s2 = get_surfs('10:95:10', tor_r, direction)
+def stamp_surfs(tor_r, view, color='y', direction='backward'):
+    _, s2 = get_surfs('10:95:10', tor_r, direction, view)
     for i in range(9):
         plt.plot(s2[0, :, i], s2[1, :, i], color)
 
