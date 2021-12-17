@@ -30,10 +30,10 @@ def get_surfs(surfs, tor_r, direction, view):
     return surfs, surfs_2
 
 def give_plot(xlim, ylim):
-    fig, ax = plt.figure()
+    fig = plt.figure()
     plt.xlim(xlim)
     plt.ylim(ylim)
-    return fig, ax
+    return fig, fig.axes[0]
 
 def stamp_surfs(tor_r, view, color='y', direction='backward'):
     _, s2 = get_surfs('10:95:10', tor_r, direction, view)
@@ -57,7 +57,7 @@ def plot_frame(data, frame, x=[316, 707], y=[384, 639]):
 def pixel_2_array(x, y, x0, y0):
     x = x - x0
     y = y-y0
-    return np.rint(x), np.rint(y)
+    return int(np.rint(x)), int(np.rint(y))
 
 def array_2_pixel(x, y, x0, y0):
     x = x + x0
@@ -74,9 +74,10 @@ def plot_corr(fig, ax, data, vmin, vmax, label, xref, yref, lines, range, color,
     ax.plot(xref, yref, 'c*')
     ax.set_title(title)
 
-def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
+def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, title):
     pol_r = flh.process_selection(pol_r)
     tor_rp = flh.process_selection(tor_r)
+    sel = flh.process_selection(selection)
 
     y_raw = data.coordinate('Image y', options={'Change only' : True})[0]
     y_raw = np.squeeze(y_raw)
@@ -98,9 +99,9 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
     dunit  = flap.Unit(name='Amplitude',unit='V')
     
     with PdfPages(savefile) as pdf:
-        for i in pol_r:
+        for i in sel:
             xp, yp = pixel_2_array(surfs[0, i, ind], surfs[1, i, ind], x[0], y[0])           
-            fig, axes = plt.subplot(3,2, sharex=True, sharey=True)
+            fig, axes = plt.subplots(3,2, sharex=True, sharey=True)
             fig.set_size_inches(8.25, 11.75)
             axes[0,0].set_ylim(y[0], y[-1])
             axes[0,0].set_xlim(x[0], x[-1])
@@ -120,14 +121,14 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
                       r'Time lag ($\mu$s)', 
                       surfs[0, i, ind], 
                       surfs[1, i, ind], 
-                      lines, 
+                      lines[:, pol_r, :], 
                       tor_r, 
-                      'w:', 
+                      'k:', 
                       title + ', CCF Max Offset', 
                       x, 
                       y)
-            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
-            pdf.savefig()
+            axes[0,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
                       axes[0,1], 
                       data_ccf.data[:,:,265].T[::-1,:], 
@@ -136,75 +137,77 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
                       'XCorr', 
                       surfs[0, i, ind], 
                       surfs[1, i, ind], 
-                      lines, 
+                      lines[:, pol_r, :], 
                       tor_r, 
-                      'w:', 
+                      'k:', 
                       title + r', CCF, t = -110 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
-            pdf.savefig()
+            axes[0,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
-                      axes[0,1], 
+                      axes[0,2], 
                       data_ccf.data[:,:,270].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
                       surfs[0, i, ind], 
                       surfs[1, i, ind], 
-                      lines, 
+                      lines[:, pol_r, :], 
                       tor_r, 
-                      'w:', 
+                      'k:', 
                       title + r', CCF, t = -55 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
-            pdf.savefig()
+            axes[0,2].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
-                      axes[0,1], 
+                      axes[0,3], 
                       data_ccf.data[:,:,275].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
                       surfs[0, i, ind], 
                       surfs[1, i, ind], 
-                      lines, 
+                      lines[:, pol_r, :], 
                       tor_r, 
-                      'w:', 
+                      'k:', 
                       title + r', CCF, t = 0 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
-            pdf.savefig()
+            axes[0,3].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
-                      axes[0,1], 
+                      axes[0,4], 
                       data_ccf.data[:,:,280].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
                       surfs[0, i, ind], 
                       surfs[1, i, ind], 
-                      lines, 
+                      lines[:, pol_r, :], 
                       tor_r, 
-                      'w:', 
+                      'k:', 
                       title + r', CCF, t = 55 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
-            pdf.savefig()
+            axes[0,4].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
-                      axes[0,1], 
+                      axes[0,5], 
                       data_ccf.data[:,:,285].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
                       surfs[0, i, ind], 
                       surfs[1, i, ind], 
-                      lines, 
+                      lines[:, pol_r, :], 
                       tor_r, 
-                      'w:', 
+                      'k:', 
                       title + r', CCF, t = 110 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
+            axes[0,5].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            stamp_surfs_2(surfs, 'k')
             pdf.savefig()
+
