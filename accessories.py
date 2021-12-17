@@ -126,7 +126,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
                       title + ', CCF Max Offset', 
                       x, 
                       y)
-            plt.plot(lines[0, ind, tor_rp], lines[1, ind, tor_rp], 'k:')
+            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
@@ -142,7 +142,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
                       title + r', CCF, t = -110 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, ind, tor_rp], lines[1, ind, tor_rp], 'k:')
+            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
@@ -158,7 +158,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
                       title + r', CCF, t = -55 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, ind, tor_rp], lines[1, ind, tor_rp], 'k:')
+            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
@@ -174,7 +174,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
                       title + r', CCF, t = 0 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, ind, tor_rp], lines[1, ind, tor_rp], 'k:')
+            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
@@ -190,7 +190,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
                       title + r', CCF, t = 55 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, ind, tor_rp], lines[1, ind, tor_rp], 'k:')
+            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
@@ -206,5 +206,5 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
                       title + r', CCF, t = 110 $\mu$s', 
                       x, 
                       y)
-            plt.plot(lines[0, ind, tor_rp], lines[1, ind, tor_rp], 'k:')
+            plt.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'k:')
             pdf.savefig()
