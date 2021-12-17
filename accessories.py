@@ -97,7 +97,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
     t = flap.Coordinate(name='Time', 
                         mode=flap.CoordinateMode(equidistant=True), 
                         unit = 'Second', 
-                        shape=(22000), 
+                        shape=(len(t)), 
                         start=t[0], 
                         step=t[1] - t[0], 
                         dimension_list=[0])
