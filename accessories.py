@@ -40,14 +40,20 @@ def stamp_surfs(tor_r, view, color='y', direction='backward'):
     for i in range(9):
         plt.plot(s2[0, :, i], s2[1, :, i], color)
 
-def stamp_lines(lines_2, tor_r, color='r'):
+def stamp_lines(lines_2, tor_r, color='r', axes=None):
     tor_r = flh.process_selection(tor_r)
     for i in range(lines_2.shape[1]):
-        plt.plot(lines_2[0, i, tor_r], lines_2[1, i, tor_r], color)
+        if axes is not None:
+            axes.plot(lines_2[0, i, tor_r], lines_2[1, i, tor_r], color)
+        else:
+            plt.plot(lines_2[0, i, tor_r], lines_2[1, i, tor_r], color)
 
-def stamp_surfs_2(surfs_2, color='y'):
+def stamp_surfs_2(surfs_2, color='y', axes=None):
     for i in range(surfs_2.shape[2]):
-        plt.plot(surfs_2[0, :, i], surfs_2[1, :, i], color)
+        if axes is not None:
+            axes.plot(surfs_2[0, :, i], surfs_2[1, :, i], color)
+        else:
+            plt.plot(surfs_2[0, :, i], surfs_2[1, :, i], color)
 
 def plot_frame(data, frame, x=[316, 707], y=[384, 639]):
     fig = give_plot(x,y)
@@ -70,7 +76,7 @@ def plot_corr(fig, ax, data, vmin, vmax, label, xref, yref, lines, range, color,
     im = ax.imshow(data, cmap='bwr', vmin=vmin, vmax=vmax, extent=[x[0], x[-1], y[0], y[-1]])
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(label)
-    stamp_lines(lines, range, color)
+    stamp_lines(lines, range, color, ax)
     ax.plot(xref, yref, 'c*')
     ax.set_title(title)
 
@@ -128,7 +134,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       x, 
                       y)
             axes[0,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
-            stamp_surfs_2(surfs, 'k')
+            stamp_surfs_2(surfs, 'k', axes[0,0])
             plot_corr(fig, 
                       axes[0,1], 
                       data_ccf.data[:,:,265].T[::-1,:], 
@@ -144,7 +150,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       x, 
                       y)
             axes[0,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
-            stamp_surfs_2(surfs, 'k')
+            stamp_surfs_2(surfs, 'k', axes[0,1])
             plot_corr(fig, 
                       axes[1,0], 
                       data_ccf.data[:,:,270].T[::-1,:], 
@@ -160,7 +166,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       x, 
                       y)
             axes[1,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
-            stamp_surfs_2(surfs, 'k')
+            stamp_surfs_2(surfs, 'k', axes[1,0])
             plot_corr(fig, 
                       axes[1,1], 
                       data_ccf.data[:,:,275].T[::-1,:], 
@@ -176,7 +182,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       x, 
                       y)
             axes[1,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
-            stamp_surfs_2(surfs, 'k')
+            stamp_surfs_2(surfs, 'k', axes[1,1])
             plot_corr(fig, 
                       axes[2,0], 
                       data_ccf.data[:,:,280].T[::-1,:], 
@@ -192,7 +198,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       x, 
                       y)
             axes[2,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
-            stamp_surfs_2(surfs, 'k')
+            stamp_surfs_2(surfs, 'k',  axes[2,0])
             plot_corr(fig, 
                       axes[2,1], 
                       data_ccf.data[:,:,285].T[::-1,:], 
@@ -208,6 +214,6 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       x, 
                       y)
             axes[2,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
-            stamp_surfs_2(surfs, 'k')
+            stamp_surfs_2(surfs, 'k', axes[2,1])
             pdf.savefig()
 
