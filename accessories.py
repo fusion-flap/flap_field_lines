@@ -146,7 +146,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             axes[0,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
             stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
-                      axes[0,2], 
+                      axes[1,0], 
                       data_ccf.data[:,:,270].T[::-1,:], 
                       -1, 
                       1, 
@@ -159,10 +159,10 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       title + r', CCF, t = -55 $\mu$s', 
                       x, 
                       y)
-            axes[0,2].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            axes[1,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
             stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
-                      axes[0,3], 
+                      axes[1,1], 
                       data_ccf.data[:,:,275].T[::-1,:], 
                       -1, 
                       1, 
@@ -175,10 +175,10 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       title + r', CCF, t = 0 $\mu$s', 
                       x, 
                       y)
-            axes[0,3].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            axes[1,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
             stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
-                      axes[0,4], 
+                      axes[2,0], 
                       data_ccf.data[:,:,280].T[::-1,:], 
                       -1, 
                       1, 
@@ -191,10 +191,10 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       title + r', CCF, t = 55 $\mu$s', 
                       x, 
                       y)
-            axes[0,4].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            axes[2,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
             stamp_surfs_2(surfs, 'k')
             plot_corr(fig, 
-                      axes[0,5], 
+                      axes[2,1], 
                       data_ccf.data[:,:,285].T[::-1,:], 
                       -1, 
                       1, 
@@ -207,7 +207,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       title + r', CCF, t = 110 $\mu$s', 
                       x, 
                       y)
-            axes[0,5].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
+            axes[2,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], 'm:')
             stamp_surfs_2(surfs, 'k')
             pdf.savefig()
 
