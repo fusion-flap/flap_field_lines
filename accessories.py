@@ -120,9 +120,10 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             data_ccf = data.ccf(ref=d_ref, coordinate='Time', 
                                 options={'Normalize' : True})
             max_p = np.argmax(data_ccf.data, axis=2)
+            mid_p = int(np.floor(data_ccf.data.shape[2]))
             plot_corr(fig, 
                       axes[0,0], 
-                      (max_p.T[::-1,:]-275) * dt, 
+                      (max_p.T[::-1,:]-mid_p) * dt, 
                       -10*dt, 10*dt, 
                       r'Time lag ($\mu$s)', 
                       surfs[0, i, ind], 
@@ -137,7 +138,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             stamp_surfs_2(surfs, 'k', axes[0,0])
             plot_corr(fig, 
                       axes[0,1], 
-                      data_ccf.data[:,:,265].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p-10].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -153,7 +154,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             stamp_surfs_2(surfs, 'k', axes[0,1])
             plot_corr(fig, 
                       axes[1,0], 
-                      data_ccf.data[:,:,270].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p-5].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -169,7 +170,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             stamp_surfs_2(surfs, 'k', axes[1,0])
             plot_corr(fig, 
                       axes[1,1], 
-                      data_ccf.data[:,:,275].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -185,7 +186,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             stamp_surfs_2(surfs, 'k', axes[1,1])
             plot_corr(fig, 
                       axes[2,0], 
-                      data_ccf.data[:,:,280].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p+5].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -201,7 +202,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             stamp_surfs_2(surfs, 'k',  axes[2,0])
             plot_corr(fig, 
                       axes[2,1], 
-                      data_ccf.data[:,:,285].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p+10].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
