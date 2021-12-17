@@ -120,7 +120,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             data_ccf = data.ccf(ref=d_ref, coordinate='Time', 
                                 options={'Normalize' : True})
             max_p = np.argmax(data_ccf.data, axis=2)
-            mid_p = int(np.floor(data_ccf.data.shape[2]))
+            mid_p = int(np.floor(data_ccf.data.shape[2]) / 2)
             plot_corr(fig, 
                       axes[0,0], 
                       (max_p.T[::-1,:]-mid_p) * dt, 
