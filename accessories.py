@@ -130,7 +130,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
-                      data_ccf.data[:,:,265], 
+                      data_ccf.data[:,:,265].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -146,7 +146,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
-                      data_ccf.data[:,:,270], 
+                      data_ccf.data[:,:,270].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -162,7 +162,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
-                      data_ccf.data[:,:,275], 
+                      data_ccf.data[:,:,275].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -178,7 +178,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
-                      data_ccf.data[:,:,280], 
+                      data_ccf.data[:,:,280].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -194,7 +194,7 @@ def create_book(data, savefile, pol_r, tor_r, lines, surfs, ind, title):
             pdf.savefig()
             plot_corr(fig, 
                       axes[0,1], 
-                      data_ccf.data[:,:,285], 
+                      data_ccf.data[:,:,285].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
