@@ -128,7 +128,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             plot_corr(fig, 
                       axes[0,0], 
                       (max_p.T[::-1,:]-mid_p) * dt, 
-                      -10*dt, 10*dt, 
+                      -5*dt, 5*dt, 
                       r'Time lag ($\mu$s)', 
                       surfs[0, i, ind], 
                       surfs[1, i, ind], 
@@ -142,7 +142,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             axes[0,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[0,1], 
-                      data_ccf.data[:,:,mid_p-10].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p-6].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -151,14 +151,14 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       lines[:, pol_r, :], 
                       tor_r, 
                       color_line, 
-                      title + r', CCF, t = -110 $\mu$s', 
+                      title + r', CCF, t = -66 $\mu$s', 
                       surfs, 
                       x, 
                       y)
             axes[0,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[1,0], 
-                      data_ccf.data[:,:,mid_p-5].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p-3].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -167,7 +167,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       lines[:, pol_r, :], 
                       tor_r, 
                       color_line, 
-                      title + r', CCF, t = -55 $\mu$s', 
+                      title + r', CCF, t = -33 $\mu$s', 
                       surfs, 
                       x, 
                       y)
@@ -190,7 +190,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             axes[1,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[2,0], 
-                      data_ccf.data[:,:,mid_p+5].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p+3].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -199,14 +199,14 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       lines[:, pol_r, :], 
                       tor_r, 
                       color_line, 
-                      title + r', CCF, t = 55 $\mu$s', 
+                      title + r', CCF, t = 33 $\mu$s', 
                       surfs, 
                       x, 
                       y)
             axes[2,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[2,1], 
-                      data_ccf.data[:,:,mid_p+10].T[::-1,:], 
+                      data_ccf.data[:,:,mid_p+6].T[::-1,:], 
                       -1, 
                       1, 
                       'XCorr', 
@@ -215,7 +215,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       lines[:, pol_r, :], 
                       tor_r, 
                       color_line, 
-                      title + r', CCF, t = 110 $\mu$s', 
+                      title + r', CCF, t = 66 $\mu$s', 
                       surfs, 
                       x, 
                       y)
