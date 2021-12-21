@@ -136,6 +136,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       tor_r, 
                       color_line, 
                       title + ', CCF Max Offset', 
+                      surfs, 
                       x, 
                       y)
             axes[0,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
@@ -151,6 +152,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       tor_r, 
                       color_line, 
                       title + r', CCF, t = -110 $\mu$s', 
+                      surfs, 
                       x, 
                       y)
             axes[0,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
@@ -166,6 +168,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       tor_r, 
                       color_line, 
                       title + r', CCF, t = -55 $\mu$s', 
+                      surfs, 
                       x, 
                       y)
             axes[1,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
@@ -181,6 +184,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       tor_r, 
                       color_line, 
                       title + r', CCF, t = 0 $\mu$s', 
+                      surfs, 
                       x, 
                       y)
             axes[1,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
@@ -196,6 +200,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       tor_r, 
                       color_line, 
                       title + r', CCF, t = 55 $\mu$s', 
+                      surfs, 
                       x, 
                       y)
             axes[2,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
@@ -211,6 +216,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
                       tor_r, 
                       color_line, 
                       title + r', CCF, t = 110 $\mu$s', 
+                      surfs, 
                       x, 
                       y)
             axes[2,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
