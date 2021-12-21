@@ -109,7 +109,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
     with PdfPages(savefile) as pdf:
         for i in sel:
             xp, yp = pixel_2_array(surfs[0, i, ind], surfs[1, i, ind], x[0], y[0])
-            if (xp > x[-1]) or (xp < x[0]) or (yp > y[-1]) or (yp < y[0]):
+            if (xp > data.shape[0]) or (xp < 0) or (yp > data.shape[1]) or (yp < 0):
                 continue        
             fig, axes = plt.subplots(3,2, sharex=True, sharey=True)
             fig.set_size_inches(8.25, 11.75)
