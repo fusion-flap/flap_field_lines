@@ -71,16 +71,18 @@ def array_2_pixel(x, y, x0, y0):
     return x, y
 
 def plot_corr(fig, ax, data, vmin, vmax, label, xref, yref, lines, range, color, title, surfs=None, x=[316, 707], y=[384, 639]):
-    ax.set_xlabel('x (px)')
-    ax.set_ylabel('y (px)')
+    ax.set_xlabel('x (px)', size='small')
+    ax.set_ylabel('y (px)', size='small')
+    ax.tick_params(axis='both', labelsize='small')
     im = ax.imshow(data, cmap='bwr', vmin=vmin, vmax=vmax, extent=[x[0], x[-1], y[0], y[-1]])
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label(label)
+    cbar.set_label(label, size='small')
+    cbar.ax.tick_params(labelsize='small')
     stamp_lines(lines, range, color, ax)
     if surfs is not None:
         stamp_surfs_2(surfs, 'k', ax)
     ax.plot(xref, yref, c='tab:orange', marker='*')
-    ax.set_title(title)
+    ax.set_title(title, size='small')
 
 def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, title, color_line = 'k:', color_ref = 'r'):
     pol_r = flh.process_selection(pol_r)
