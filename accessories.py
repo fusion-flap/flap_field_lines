@@ -70,7 +70,22 @@ def array_2_pixel(x, y, x0, y0):
     y = y + y0
     return x, y
 
-def plot_corr(fig, ax, data, vmin, vmax, label, xref, yref, lines, range, color, title, surfs=None, x=[316, 707], y=[384, 639]):
+def plot_corr(fig, 
+              ax, 
+              data, 
+              vmin, 
+              vmax, 
+              label, 
+              xref, 
+              yref, 
+              lines, 
+              range, 
+              color, 
+              color_ref, 
+              title, 
+              surfs=None, 
+              x=[316, 707], 
+              y=[384, 639]):
     ax.set_xlabel('x (px)', size='small')
     ax.set_ylabel('y (px)', size='small')
     ax.tick_params(axis='both', labelsize='small')
@@ -80,11 +95,23 @@ def plot_corr(fig, ax, data, vmin, vmax, label, xref, yref, lines, range, color,
     cbar.ax.tick_params(labelsize='small')
     stamp_lines(lines, range, color, ax)
     if surfs is not None:
-        stamp_surfs_2(surfs, 'k', ax)
-    ax.plot(xref, yref, c='tab:orange', marker='*')
+        stamp_surfs_2(surfs, color, ax)
+    ax.plot(xref, yref, c=color_ref, marker='*')
     ax.set_title(title, size='small')
 
-def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, title, color_line = 'k:', color_ref = 'r'):
+def create_book(data, 
+                savefile, 
+                selection, 
+                lines, 
+                pol_r, 
+                tor_r, 
+                surfs, 
+                tor_ind, 
+                title, 
+                corr_v = 1, 
+                time_lag = 5, 
+                color_line = 'k:', 
+                color_ref = 'r'):
     pol_r = flh.process_selection(pol_r)
     tor_rp = flh.process_selection(tor_r)
     sel = flh.process_selection(selection)
@@ -110,7 +137,7 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
     
     with PdfPages(savefile) as pdf:
         for i in sel:
-            xp, yp = pixel_2_array(surfs[0, i, ind], surfs[1, i, ind], x[0], y[0])
+            xp, yp = pixel_2_array(lines[0, i, tor_ind], lines[1, i, tor_ind], x[0], y[0])
             if (xp > data.shape[0]) or (xp < 0) or (yp > data.shape[1]) or (yp < 0):
                 continue        
             fig, axes = plt.subplots(3,2, sharex=True, sharey=True)
@@ -130,13 +157,14 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             plot_corr(fig, 
                       axes[0,0], 
                       (max_p.T[::-1,:]-mid_p) * dt, 
-                      -3*dt, 3*dt, 
+                      -time_lag*dt, time_lag*dt, 
                       r'Time lag ($\mu$s)', 
-                      surfs[0, i, ind], 
-                      surfs[1, i, ind], 
+                      lines[0, i, tor_ind], 
+                      lines[1, i, tor_ind], 
                       lines[:, pol_r, :], 
                       tor_r, 
                       color_line, 
+                      color_ref, 
                       title + ', CCF Max Offset', 
                       surfs, 
                       x, 
@@ -147,14 +175,15 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             plot_corr(fig, 
                       axes[0,1], 
                       data_ccf.data[:,:,mid_p-6].T[::-1,:], 
-                      -0.5, 
-                      0.5, 
+                      -corr_v, 
+                      corr_v, 
                       'XCorr', 
-                      surfs[0, i, ind], 
-                      surfs[1, i, ind], 
+                      lines[0, i, tor_ind], 
+                      lines[1, i, tor_ind], 
                       lines[:, pol_r, :], 
                       tor_r, 
-                      color_line, 
+                      color_line,  
+                      color_ref, 
                       title + r', CCF, t = -66 $\mu$s', 
                       surfs, 
                       x, 
@@ -165,14 +194,15 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             plot_corr(fig, 
                       axes[1,0], 
                       data_ccf.data[:,:,mid_p-3].T[::-1,:], 
-                      -0.5, 
-                      0.5, 
+                      -corr_v, 
+                      corr_v, 
                       'XCorr', 
-                      surfs[0, i, ind], 
-                      surfs[1, i, ind], 
+                      lines[0, i, tor_ind], 
+                      lines[1, i, tor_ind], 
                       lines[:, pol_r, :], 
                       tor_r, 
-                      color_line, 
+                      color_line,  
+                      color_ref, 
                       title + r', CCF, t = -33 $\mu$s', 
                       surfs, 
                       x, 
@@ -183,14 +213,15 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             plot_corr(fig, 
                       axes[1,1], 
                       data_ccf.data[:,:,mid_p].T[::-1,:], 
-                      -0.5, 
-                      0.5, 
+                      -corr_v, 
+                      corr_v, 
                       'XCorr', 
-                      surfs[0, i, ind], 
-                      surfs[1, i, ind], 
+                      lines[0, i, tor_ind], 
+                      lines[1, i, tor_ind], 
                       lines[:, pol_r, :], 
                       tor_r, 
-                      color_line, 
+                      color_line,  
+                      color_ref, 
                       title + r', CCF, t = 0 $\mu$s', 
                       surfs, 
                       x, 
@@ -201,14 +232,15 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             plot_corr(fig, 
                       axes[2,0], 
                       data_ccf.data[:,:,mid_p+3].T[::-1,:], 
-                      -0.5, 
-                      0.5, 
+                      -corr_v, 
+                      corr_v, 
                       'XCorr', 
-                      surfs[0, i, ind], 
-                      surfs[1, i, ind], 
+                      lines[0, i, tor_ind], 
+                      lines[1, i, tor_ind], 
                       lines[:, pol_r, :], 
                       tor_r, 
-                      color_line, 
+                      color_line,  
+                      color_ref, 
                       title + r', CCF, t = 33 $\mu$s', 
                       surfs, 
                       x, 
@@ -219,14 +251,15 @@ def create_book(data, savefile, selection, lines, pol_r, tor_r, surfs, ind, titl
             plot_corr(fig, 
                       axes[2,1], 
                       data_ccf.data[:,:,mid_p+6].T[::-1,:], 
-                      -0.5, 
-                      0.5, 
+                      -corr_v, 
+                      corr_v, 
                       'XCorr', 
-                      surfs[0, i, ind], 
-                      surfs[1, i, ind], 
+                      lines[0, i, tor_ind], 
+                      lines[1, i, tor_ind], 
                       lines[:, pol_r, :], 
                       tor_r, 
-                      color_line, 
+                      color_line,  
+                      color_ref, 
                       title + r', CCF, t = 66 $\mu$s', 
                       surfs, 
                       x, 
