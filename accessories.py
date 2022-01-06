@@ -286,5 +286,5 @@ def compare_filters(data, steep=0.2, loss=3, att=20, type='Elliptic'):
     plt.figure()
     plt.loglog(f, data_apsd.data)
     plt.loglog(f, data_fil_apsd.data)
-    plt.title('steep: {steep}, loss: {loss}, attenuation: {att}, type: {type}', size='small')
+    plt.title(f'steep: {steep}, loss: {loss}, attenuation: {att}, type: {type}', size='small')
 
