@@ -269,10 +269,10 @@ def create_book(data,
             axes[2,1].plot(lines[0, i, 7050:7302], lines[1, i, 7050:7302], c=color_ref, ls=':')
             pdf.savefig()
 
-def compare_filters(data, steep=0.2, loss=3, att=20, type='Elliptic'):
+def compare_filters(data, steep=0.2, loss=3, att=20, type='Elliptic', f_high=10000, f_low=1000):
     filter_options = {'Type' : 'Bandpass', 
-                      'f_low' : 1000, 
-                      'f_high' : 10000, 
+                      'f_low' : f_low, 
+                      'f_high' : f_high, 
                       'Tau' : 1.1111111234640703e-05, 
                       'Design' : type, 
                       'Steepness' : steep, 
