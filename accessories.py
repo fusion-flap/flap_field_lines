@@ -283,8 +283,13 @@ def compare_filters(data, steep=0.2, loss=3, att=20, type='Elliptic', f_high=100
     f = np.squeeze(data_apsd.coordinate('Frequency', options={'Change only' : True})[0])
     data_fil = data.filter_data(coordinate='Time', options=filter_options)
     data_fil_apsd = data_fil.apsd(coordinate='Time', options={'Trend removal' : 'Mean'})
+    df = f[1] - f[0]
+    wp = [(f_low + f_low * steep / 2), (f_high - f_high * steep / 2)]
+    wp[0] = np.argmin(np.abs(f - wp[0]))
+    wp[1] = np.argmin(np.abs(f - wp[1]))
+    err = np.sqrt(np.sum((data_apsd.data[wp[0]:wp[1]] - data_fil_apsd.data[wp[0]:wp[1]])**2))
     plt.figure()
     plt.loglog(f, data_apsd.data)
     plt.loglog(f, data_fil_apsd.data)
-    plt.title(f'steep: {steep}, loss: {loss}, attenuation: {att}, type: {type}', size='small')
+    plt.title(f'steep: {steep}, loss: {loss}, attenuation: {att}, type: {type}, ' + r'$\Delta$P:' + f'{err:.3f}', size='small')
 
