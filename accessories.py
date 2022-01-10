@@ -305,7 +305,7 @@ def data_spectral(data_apsd, roi):
     roi[0] = np.argmin(np.abs(f - roi[0]))
     roi[1] = np.argmin(np.abs(f - roi[1]))
     roi_power = trapz(data_apsd.data[:,:,roi[0]:roi[1]], x=f[roi[0]:roi[1]], axis=2)
-    roi_max = np.argmax(data_apsd.data[:,:,roi[0]:roi[1]], axis=2)
+    roi_max = roi[0] + np.argmax(data_apsd.data[:,:,roi[0]:roi[1]], axis=2)
     for i in range(roi_max.shape[0]):
         for j in range(roi_max.shape[1]):
             roi_max[i, j] = f[roi_max[i, j]]
