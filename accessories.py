@@ -304,6 +304,6 @@ def data_spectral(data_apsd, roi):
     f = np.squeeze(data_apsd.coordinate('Frequency', options={'Change only' : True})[0])
     roi[0] = np.argmin(np.abs(f - roi[0]))
     roi[1] = np.argmin(np.abs(f - roi[1]))
-    roi_power = trapz(data_apsd.data[roi[0]:roi[1]], x=f[roi[0]:roi[1]], axis=2)
-    roi_max = np.amax(data_apsd.data[roi[0]:roi[1]], axis=2)
+    roi_power = trapz(data_apsd.data[:,:,roi[0]:roi[1]], x=f[roi[0]:roi[1]], axis=2)
+    roi_max = np.amax(data_apsd.data[:,:,roi[0]:roi[1]], axis=2)
     return mean_spect, roi_power, roi_max
