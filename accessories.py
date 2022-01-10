@@ -299,7 +299,7 @@ def mean_data(data):
     data_all = trapz(data.data, x=t, axis=2)
     return data_mean, data_all
 
-def data_spectral(data_apsd, roi, noise_range):
+def data_spectral(data_apsd, roi):
     mean_spect = np.mean(np.mean(data_apsd.data, axis=0), axis=0)
     f = np.squeeze(data_apsd.coordinate('Frequency', options={'Change only' : True})[0])
     roi[0] = np.argmin(np.abs(f - roi[0]))
