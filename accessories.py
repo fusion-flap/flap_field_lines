@@ -8,6 +8,7 @@ Created on Tue Dec 10 2021
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
+from scipy.integrate import trapz
 import flap_field_lines.field_line_handler as flh
 import flap
 
@@ -283,7 +284,6 @@ def compare_filters(data, steep=0.2, loss=3, att=20, type='Elliptic', f_high=100
     f = np.squeeze(data_apsd.coordinate('Frequency', options={'Change only' : True})[0])
     data_fil = data.filter_data(coordinate='Time', options=filter_options)
     data_fil_apsd = data_fil.apsd(coordinate='Time', options={'Trend removal' : 'Mean'})
-    df = f[1] - f[0]
     wp = [(f_low + f_low * steep / 2), (f_high - f_high * steep / 2)]
     wp[0] = np.argmin(np.abs(f - wp[0]))
     wp[1] = np.argmin(np.abs(f - wp[1]))
@@ -293,3 +293,17 @@ def compare_filters(data, steep=0.2, loss=3, att=20, type='Elliptic', f_high=100
     plt.loglog(f, data_fil_apsd.data)
     plt.title(f'steep: {steep}, loss: {loss}, attenuation: {att}, type: {type}, ' + r'$\Delta$P:' + f'{err:.3f}', size='small')
 
+def mean_data(data):
+    data_mean = np.mean(data.data, axis=2)
+    t = np.squeeze(data.coordinate('Time', options={'Change only' : True})[0])
+    data_all = trapz(data.data, x=t, axis=2)
+    return data_mean, data_all
+
+def data_spectral(data_apsd, roi, noise_range):
+    mean_spect = np.mean(np.mean(data_apsd.data, axis=0), axis=0)
+    f = np.squeeze(data_apsd.coordinate('Frequency', options={'Change only' : True})[0])
+    roi[0] = np.argmin(np.abs(f - roi[0]))
+    roi[1] = np.argmin(np.abs(f - roi[1]))
+    roi_power = trapz(data_apsd.data[roi[0]:roi[1]], x=f[roi[0]:roi[1]], axis=2)
+    roi_max = np.amax(data_apsd.data[roi[0]:roi[1]], axis=2)
+    return mean_spect, roi_power, roi_max
