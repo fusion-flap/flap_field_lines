@@ -100,6 +100,19 @@ def plot_corr(fig,
     ax.plot(xref, yref, c=color_ref, marker='*')
     ax.set_title(title, size='small')
 
+def return_view_xy(data):
+    y_raw = data.coordinate('Image y', options={'Change only' : True})[0]
+    y_raw = np.squeeze(y_raw)
+    x_raw = data.coordinate('Image x', options={'Change only' : True})[0]
+    x_raw = np.squeeze(x_raw)
+    y = [x_raw[0], 1023-x_raw[0]]
+    x = [y_raw[0], 1023-y_raw[0]]
+    return  x, y
+
+def return_coord(data, coord):
+    t = np.squeeze(data.coordinate(coord, options={'Change only' : True})[0])
+    return t
+
 def create_book(data, 
                 savefile, 
                 selection, 
@@ -117,14 +130,9 @@ def create_book(data,
     tor_rp = flh.process_selection(tor_r)
     sel = flh.process_selection(selection)
 
-    y_raw = data.coordinate('Image y', options={'Change only' : True})[0]
-    y_raw = np.squeeze(y_raw)
-    x_raw = data.coordinate('Image x', options={'Change only' : True})[0]
-    x_raw = np.squeeze(x_raw)
-    y = [x_raw[0], 1023-x_raw[0]]
-    x = [y_raw[0], 1023-y_raw[0]]
+    x, y = return_view_xy(data)
 
-    t = np.squeeze(data.coordinate('Time', options={'Change only' : True})[0])
+    t = return_coord(data, 'Time')
     dt = (t[1] - t[0]) * 10**6
     t = flap.Coordinate(name='Time', 
                         mode=flap.CoordinateMode(equidistant=True), 
