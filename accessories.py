@@ -100,18 +100,16 @@ def plot_corr(fig,
     ax.plot(xref, yref, c=color_ref, marker='*')
     ax.set_title(title, size='small')
 
-def return_view_xy(data):
-    y_raw = data.coordinate('Image y', options={'Change only' : True})[0]
-    y_raw = np.squeeze(y_raw)
-    x_raw = data.coordinate('Image x', options={'Change only' : True})[0]
-    x_raw = np.squeeze(x_raw)
-    y = [x_raw[0], 1023-x_raw[0]]
-    x = [y_raw[0], 1023-y_raw[0]]
-    return  x, y
-
 def return_coord(data, coord):
     t = np.squeeze(data.coordinate(coord, options={'Change only' : True})[0])
     return t
+
+def return_view_xy(data):
+    y_raw = return_coord(data, 'Image y')
+    x_raw = return_coord(data, 'Image x')
+    y = [x_raw[0], 1023-x_raw[0]]
+    x = [y_raw[0], 1023-y_raw[0]]
+    return  x, y
 
 def create_book(data, 
                 savefile, 
@@ -179,8 +177,8 @@ def create_book(data,
                       x, 
                       y)
             axes[0,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[0,0].plot(lines[0, i, 0:160], lines[1, i, 0:160], c=color_ref, ls=':')
-            axes[0,0].plot(lines[0, i, 7050:7302], lines[1, i, 7050:7302], c=color_ref, ls=':')
+            axes[0,0].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
+            axes[0,0].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[0,1], 
                       data_ccf.data[:,:,mid_p-6].T[::-1,:], 
@@ -198,8 +196,8 @@ def create_book(data,
                       x, 
                       y)
             axes[0,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[0,1].plot(lines[0, i, 0:160], lines[1, i, 0:160], c=color_ref, ls=':')
-            axes[0,1].plot(lines[0, i, 7050:7302], lines[1, i, 7050:7302], c=color_ref, ls=':')
+            axes[0,1].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
+            axes[0,1].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[1,0], 
                       data_ccf.data[:,:,mid_p-3].T[::-1,:], 
@@ -217,8 +215,8 @@ def create_book(data,
                       x, 
                       y)
             axes[1,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[1,0].plot(lines[0, i, 0:160], lines[1, i, 0:160], c=color_ref, ls=':')
-            axes[1,0].plot(lines[0, i, 7050:7302], lines[1, i, 7050:7302], c=color_ref, ls=':')
+            axes[1,0].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
+            axes[1,0].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[1,1], 
                       data_ccf.data[:,:,mid_p].T[::-1,:], 
@@ -236,8 +234,8 @@ def create_book(data,
                       x, 
                       y)
             axes[1,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[1,1].plot(lines[0, i, 0:160], lines[1, i, 0:160], c=color_ref, ls=':')
-            axes[1,1].plot(lines[0, i, 7050:7302], lines[1, i, 7050:7302], c=color_ref, ls=':')
+            axes[1,1].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
+            axes[1,1].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[2,0], 
                       data_ccf.data[:,:,mid_p+3].T[::-1,:], 
@@ -255,8 +253,8 @@ def create_book(data,
                       x, 
                       y)
             axes[2,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[2,0].plot(lines[0, i, 0:160], lines[1, i, 0:160], c=color_ref, ls=':')
-            axes[2,0].plot(lines[0, i, 7050:7302], lines[1, i, 7050:7302], c=color_ref, ls=':')
+            axes[2,0].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
+            axes[2,0].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
             plot_corr(fig, 
                       axes[2,1], 
                       data_ccf.data[:,:,mid_p+6].T[::-1,:], 
@@ -274,8 +272,8 @@ def create_book(data,
                       x, 
                       y)
             axes[2,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[2,1].plot(lines[0, i, 0:160], lines[1, i, 0:160], c=color_ref, ls=':')
-            axes[2,1].plot(lines[0, i, 7050:7302], lines[1, i, 7050:7302], c=color_ref, ls=':')
+            axes[2,1].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
+            axes[2,1].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
             pdf.savefig()
 
 def compare_filters(data, steep=0.2, loss=3, att=20, type='Elliptic', f_high=10000, f_low=1000):
