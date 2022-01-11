@@ -36,10 +36,13 @@ def give_plot(xlim, ylim):
     plt.ylim(ylim)
     return fig, fig.axes[0]
 
-def stamp_surfs(tor_r, view, color='y', direction='backward'):
-    _, s2 = get_surfs('10:95:10', tor_r, direction, view)
-    for i in range(9):
-        plt.plot(s2[0, :, i], s2[1, :, i], color)
+def stamp_surfs(surf_select, tor_r, view, color='y', direction='backward'):
+    _, s2 = get_surfs(surf_select, tor_r, direction, view)
+    if len(s2.shape) < 3:
+        plt.plot(s2[0, :], s2[1, :], color)
+    else:
+        for i in range(9):
+            plt.plot(s2[0, :, i], s2[1, :, i], color)
 
 def stamp_lines(lines_2, tor_r, color='r', axes=None):
     tor_r = flh.process_selection(tor_r)
