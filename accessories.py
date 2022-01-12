@@ -52,6 +52,13 @@ def stamp_lines(lines_2, tor_r, color='r', axes=None):
         else:
             plt.plot(lines_2[0, i, tor_r], lines_2[1, i, tor_r], color)
 
+def stamp_line(line, tor_r, color='r', axes=None):
+    tor_r = flh.process_selection(tor_r)
+    if axes is not None:
+        axes.plot(line[0, tor_r], line[1, tor_r], color)
+    else:
+        plt.plot(line[0, tor_r], line[1, tor_r], color)
+
 def stamp_surfs_2(surfs_2, color='y', axes=None):
     for i in range(surfs_2.shape[2]):
         if axes is not None:
