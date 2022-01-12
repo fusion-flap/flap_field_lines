@@ -376,6 +376,32 @@ class FieldLineHandler:
     def return_surfaces(self):
         return self.surfaces
 
+def iter_2_array(selected):
+    #if selection is iterable, put all elements into a list
+    a = []
+    for x in selected:
+        if isinstance(x, int):
+            a.append(x)
+        else:
+            raise TypeError('Field line selection should only have integers.')
+    return a
+
+def str_2_range(selected):
+    selected = selected.split(':')
+    try:
+        first = int(selected[0])
+        last = int(selected[1])
+    except (ValueError, IndexError):
+        raise ValueError('Input string should be of format from:to(:by).')
+    if len(selected) == 3:
+        #step bw elements is optional
+        step = int(selected[2])
+        return range(first, last, step)
+    elif len(selected) > 3:
+        raise ValueError('Input string should be of format from:to(:by).')
+    else:
+        return range(first, last)
+
 def process_selection(selected):
     """
     Processes selection. Either returnes a list in case of single or mutiple 
@@ -391,28 +417,15 @@ def process_selection(selected):
         #returns range if a string is specified. string is broken up by ":"
         if selected == ':':
             return None
-        selected = selected.split(':')
-        try:
-            first = int(selected[0])
-            last = int(selected[1])
-        except (ValueError, IndexError):
-            raise ValueError('Input string should be of format from:to(:by).')
-        if len(selected) == 3:
-            #step bw elements is optional
-            step = int(selected[2])
-            return range(first, last, step)
-        elif len(selected) > 3:
-            raise ValueError('Input string should be of format from:to(:by).')
-        else:
-            return range(first, last)
-    elif hasattr(selected, '__iter__'):
-        #if selection is iterable, put all elements into a list
+        selected = selected.split(',')
         a = []
-        for x in selected:
-            if isinstance(x, int):
-                a.append(x)
-            else:
-                raise TypeError('Field line selection should only have integers.')
+        for sel in selected:
+            try:
+                a += [int(sel)]
+            except ValueError:
+                a += iter_2_array(str_2_range(sel))
         return a
+    elif hasattr(selected, '__iter__'):
+        return iter_2_array(selected)
     else:
         raise TypeError('Wrong field line selection format.')

@@ -28,16 +28,18 @@ class TestAccessories(unittest.TestCase):
         improper string format.
         """
         self.assertEqual([5], process_selection(5))
-        self.assertEqual(range(3, 7), process_selection('3:7'))
-        self.assertEqual(range(3, 20, 5), process_selection('3:20:5'))
+        self.assertEqual([5], process_selection('5'))
+        self.assertEqual([3, 4, 5, 6], process_selection('3:7'))
+        self.assertEqual([3, 8, 13, 18], process_selection('3:20:5'))
+        self.assertEqual([1, 3, 8, 13, 18, 21, 22, 24, 26, 28], process_selection('1, 3:20:5, 21, 22:30:2'))
         self.assertEqual(None, process_selection(':'))
         self.assertListEqual([3, 8, 13], process_selection([3, 8, 13]))
         self.assertListEqual([3, 8, 13], process_selection((3, 8, 13)))
+        self.assertListEqual([3, 8, 13], process_selection(range(3,14,5)))
         self.assertRaises(TypeError, process_selection)
         self.assertRaises(TypeError, process_selection, 3.75)
         self.assertRaises(TypeError, process_selection, (1, 3.2))
         self.assertRaises(ValueError, process_selection, 'retek')
-        self.assertRaises(ValueError, process_selection, '5')
         self.assertRaises(ValueError, process_selection, '5:10:2:3')
 
 class TestFieldLineHandlerConstructor(unittest.TestCase):
