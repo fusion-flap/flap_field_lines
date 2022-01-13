@@ -104,7 +104,7 @@ def plot_corr(fig,
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(label, size='small')
     cbar.ax.tick_params(labelsize='small')
-    stamp_lines(lines, range, color, ax)
+    stamp_lines(lines, range, color + ':', ax)
     if surfs is not None:
         stamp_surfs_2(surfs, color, ax)
     ax.plot(xref, yref, c=color_ref, marker='*')
@@ -131,8 +131,8 @@ def create_book(data,
                 tor_ind, 
                 title, 
                 corr_v = 1, 
-                time_lag = 5, 
-                color_line = 'k:', 
+                time_lag = [3, 7], 
+                color_line = 'k', 
                 color_ref = 'r'):
     pol_r = flh.process_selection(pol_r)
     tor_rp = flh.process_selection(tor_r)
@@ -169,12 +169,13 @@ def create_book(data,
                                     exp_id = '123456_01')
             data_ccf = data.ccf(ref=d_ref, coordinate='Time', 
                                 options={'Normalize' : True})
+            max_ccf = np.max(data_ccf.data, axis=2)
             max_p = np.argmax(data_ccf.data, axis=2)
             mid_p = int(np.floor(data_ccf.data.shape[2]) / 2)
             plot_corr(fig, 
                       axes[0,0], 
                       (max_p.T[::-1,:]-mid_p) * dt, 
-                      -time_lag*dt, time_lag*dt, 
+                      -time_lag[0]*dt, time_lag[0]*dt, 
                       r'Time lag ($\mu$s)', 
                       lines[0, i, tor_ind], 
                       lines[1, i, tor_ind], 
@@ -186,105 +187,90 @@ def create_book(data,
                       surfs, 
                       x, 
                       y)
-            axes[0,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[0,0].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
-            axes[0,0].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
+            plot_ref_line(axes[0,0], lines, i, tor_rp, color_ref)
             plot_corr(fig, 
                       axes[0,1], 
-                      data_ccf.data[:,:,mid_p-6].T[::-1,:], 
-                      -corr_v, 
-                      corr_v, 
-                      'XCorr', 
+                      (max_p.T[::-1,:]-mid_p) * dt, 
+                      -time_lag[1]*dt, time_lag[1]*dt, 
+                      r'Time lag ($\mu$s)', 
                       lines[0, i, tor_ind], 
                       lines[1, i, tor_ind], 
                       lines[:, pol_r, :], 
                       tor_r, 
-                      color_line,  
+                      color_line, 
                       color_ref, 
-                      title + r', CCF, t = -66 $\mu$s', 
+                      title + ', CCF Max Offset', 
                       surfs, 
                       x, 
                       y)
-            axes[0,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[0,1].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
-            axes[0,1].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
+            plot_ref_line(axes[0,1], lines, i, tor_rp, color_ref)
             plot_corr(fig, 
                       axes[1,0], 
-                      data_ccf.data[:,:,mid_p-3].T[::-1,:], 
+                      max_ccf.T[::-1,:], 
                       -corr_v, 
                       corr_v, 
-                      'XCorr', 
+                      'XCorr Max', 
                       lines[0, i, tor_ind], 
                       lines[1, i, tor_ind], 
                       lines[:, pol_r, :], 
                       tor_r, 
                       color_line,  
                       color_ref, 
-                      title + r', CCF, t = -33 $\mu$s', 
+                      title + ', Max CCF', 
                       surfs, 
                       x, 
                       y)
-            axes[1,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[1,0].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
-            axes[1,0].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
-            plot_corr(fig, 
-                      axes[1,1], 
-                      data_ccf.data[:,:,mid_p].T[::-1,:], 
-                      -corr_v, 
-                      corr_v, 
-                      'XCorr', 
-                      lines[0, i, tor_ind], 
-                      lines[1, i, tor_ind], 
-                      lines[:, pol_r, :], 
-                      tor_r, 
-                      color_line,  
-                      color_ref, 
-                      title + r', CCF, t = 0 $\mu$s', 
-                      surfs, 
-                      x, 
-                      y)
-            axes[1,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[1,1].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
-            axes[1,1].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
-            plot_corr(fig, 
-                      axes[2,0], 
-                      data_ccf.data[:,:,mid_p+3].T[::-1,:], 
-                      -corr_v, 
-                      corr_v, 
-                      'XCorr', 
-                      lines[0, i, tor_ind], 
-                      lines[1, i, tor_ind], 
-                      lines[:, pol_r, :], 
-                      tor_r, 
-                      color_line,  
-                      color_ref, 
-                      title + r', CCF, t = 33 $\mu$s', 
-                      surfs, 
-                      x, 
-                      y)
-            axes[2,0].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[2,0].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
-            axes[2,0].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
-            plot_corr(fig, 
-                      axes[2,1], 
-                      data_ccf.data[:,:,mid_p+6].T[::-1,:], 
-                      -corr_v, 
-                      corr_v, 
-                      'XCorr', 
-                      lines[0, i, tor_ind], 
-                      lines[1, i, tor_ind], 
-                      lines[:, pol_r, :], 
-                      tor_r, 
-                      color_line,  
-                      color_ref, 
-                      title + r', CCF, t = 66 $\mu$s', 
-                      surfs, 
-                      x, 
-                      y)
-            axes[2,1].plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
-            axes[2,1].plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
-            axes[2,1].plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
+            plot_ref_line(axes[1,0], lines, i, tor_rp, color_ref)
+
+            for j in range(3):
+                plot_corr(fig, 
+                        axes.ravel()[j + 3], 
+                        data_ccf.data[:,:,mid_p-4+j].T[::-1,:], 
+                        -corr_v, 
+                        corr_v, 
+                        'XCorr', 
+                        lines[0, i, tor_ind], 
+                        lines[1, i, tor_ind], 
+                        lines[:, pol_r, :], 
+                        tor_r, 
+                        color_line,  
+                        color_ref, 
+                        title + f', CCF, t = {-44 + j*11}' +  r'$\mu$s', 
+                        surfs, 
+                        x, 
+                        y)
+                plot_ref_line(axes.ravel()[j + 3], lines, i, tor_rp, color_ref)
             pdf.savefig()
+
+            fig, axes = plt.subplots(3,2, sharex=True, sharey=True)
+            fig.set_size_inches(8.25, 11.75)
+            axes[0,0].set_ylim(y[0], y[-1])
+            axes[0,0].set_xlim(x[0], x[-1])
+
+            for j in range(6):
+                plot_corr(fig, 
+                        axes.ravel()[j], 
+                        data_ccf.data[:,:,mid_p-1+j].T[::-1,:], 
+                        -corr_v, 
+                        corr_v, 
+                        'XCorr', 
+                        lines[0, i, tor_ind], 
+                        lines[1, i, tor_ind], 
+                        lines[:, pol_r, :], 
+                        tor_r, 
+                        color_line,  
+                        color_ref, 
+                        title + f', CCF, t = {-11 + j*11}' +  r'$\mu$s', 
+                        surfs, 
+                        x, 
+                        y)
+                plot_ref_line(axes.ravel()[j], lines, i, tor_rp, color_ref)
+            pdf.savefig()
+
+def plot_ref_line(ax, lines, i, tor_rp, color_ref):
+    ax.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
+    ax.plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
+    ax.plot(lines[0, i, 7025:7302], lines[1, i, 7025:7302], c=color_ref, ls=':')
 
 def compare_filters(data, steep=0.2, loss=3, att=20, type='Elliptic', f_high=10000, f_low=1000):
     filter_options = {'Type' : 'Bandpass', 
