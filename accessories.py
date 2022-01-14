@@ -348,6 +348,6 @@ def binning_data(data):
                                coordinates = [t, x, y], 
                                data_title = data.data_title + ', binned', 
                                exp_id = data.exp_id,
-                               source = data.source,
+                               data_source = data.data_source,
                                info = data.info)
     return data_bin
