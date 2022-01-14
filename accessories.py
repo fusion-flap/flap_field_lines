@@ -344,7 +344,7 @@ def binning_data(data):
                         dimension_list=x.dimension_list)
 
     data_bin = flap.DataObject(data_array = data_bin, 
-                               data_unit = data.unit, 
+                               data_unit = data.data_unit, 
                                coordinates = [t, x, y], 
                                data_title = data.data_title + ', binned', 
                                exp_id = data.exp_id,
