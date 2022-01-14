@@ -316,11 +316,38 @@ def data_spectral(data_apsd, roi):
 def binning_data(data):
     y_raw = return_coord(data, 'Image y')
     x_raw = return_coord(data, 'Image x')
-    t = return_coord(data, 'Time')
     im_x = (x_raw[-1] - x_raw[0] + 1) // 3
     im_y = (y_raw[-1] - y_raw[0] + 1) // 3
-    data_bin = np.zeros((im_x, im_y, len(t)))
+    data_bin = np.zeros((im_x, im_y, data.shape[2]))
     for i in range(im_x):
         for j in range(im_y):
             data_bin[i,j,:] = np.mean(data.data[3*i:3*i+2,3*j:3*j+2,:], axis=(0,1))
+    
+    t = data.get_coordinate_object('Time')
+    x = data.get_coordinate_object('Image x')
+    y = data.get_coordinate_object('Image y')
+
+    x = flap.Coordinate(name='Image x', 
+                        mode=flap.CoordinateMode(equidistant=True), 
+                        unit = x.unit, 
+                        shape=x.shape, 
+                        start=x.start, 
+                        step=3, 
+                        dimension_list=x.dimension_list)
+    
+    x = flap.Coordinate(name='Image x', 
+                        mode=flap.CoordinateMode(equidistant=True), 
+                        unit = x.unit, 
+                        shape=x.shape, 
+                        start=x.start, 
+                        step=3, 
+                        dimension_list=x.dimension_list)
+
+    data_bin = flap.DataObject(data_array = data_bin, 
+                               data_unit = data.unit, 
+                               coordinates = [t, x, y], 
+                               data_title = data.data_title + ', binned', 
+                               exp_id = data.exp_id,
+                               source = data.source,
+                               info = data.info)
     return data_bin
