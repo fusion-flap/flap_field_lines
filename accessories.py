@@ -312,3 +312,15 @@ def data_spectral(data_apsd, roi):
         for j in range(roi_max.shape[1]):
             roi_max[i, j] = f[roi_max[i, j]]
     return mean_spect, roi_power, roi_max
+
+def binning_data(data):
+    y_raw = return_coord(data, 'Image y')
+    x_raw = return_coord(data, 'Image x')
+    t = return_coord(data, 'Time')
+    im_x = (x_raw[-1] - x_raw[0] + 1) // 3
+    im_y = (y_raw[-1] - y_raw[0] + 1) // 3
+    data_bin = np.zeros((im_x, im_y, len(t)))
+    for i in range(im_x):
+        for j in range(im_y):
+            data_bin[i,j,:] = np.mean(data.data[3*i:3*i+2,3*j:3*j+2,:], axis=(0,1))
+    return data_bin
