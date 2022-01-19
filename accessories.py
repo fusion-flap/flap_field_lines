@@ -335,13 +335,13 @@ def binning_data(data):
                         step=3, 
                         dimension_list=x.dimension_list)
     
-    x = flap.Coordinate(name='Image x', 
+    y = flap.Coordinate(name='Image y', 
                         mode=flap.CoordinateMode(equidistant=True), 
-                        unit = x.unit, 
-                        shape=x.shape, 
-                        start=x.start, 
+                        unit = y.unit, 
+                        shape=y.shape, 
+                        start=y.start, 
                         step=3, 
-                        dimension_list=x.dimension_list)
+                        dimension_list=y.dimension_list)
 
     data_bin = flap.DataObject(data_array = data_bin, 
                                data_unit = data.data_unit, 
