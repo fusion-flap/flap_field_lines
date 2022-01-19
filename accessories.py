@@ -71,10 +71,10 @@ def plot_frame(data, frame, x=[316, 707], y=[384, 639]):
     im = plt.imshow(data.data[:,:,frame].T[::-1,:], extent=[x[0], x[-1], y[0], y[-1]])
     return im, fig
 
-def pixel_2_array(x, y, x0, y0):
+def pixel_2_array(x, y, x0, y0, dx=1, dy=1):
     x = x - x0
     y = y-y0
-    return int(np.rint(x)), int(np.rint(y))
+    return int(np.floor(x / dx)), int(np.floor(y / dy))
 
 def array_2_pixel(x, y, x0, y0):
     x = x + x0
@@ -119,7 +119,7 @@ def return_view_xy(data):
     x_raw = return_coord(data, 'Image x')
     y = [x_raw[0], 1023-x_raw[0]]
     x = [y_raw[0], 1023-y_raw[0]]
-    return  x, y
+    return  x, y, x_raw[1] - x_raw[0], y_raw[1] - y_raw[0]
 
 def create_book(data, 
                 savefile, 
@@ -138,7 +138,7 @@ def create_book(data,
     tor_rp = flh.process_selection(tor_r)
     sel = flh.process_selection(selection)
 
-    x, y = return_view_xy(data)
+    x, y, dx, dy = return_view_xy(data)
 
     t = return_coord(data, 'Time')
     dt = (t[1] - t[0]) * 10**6
@@ -154,7 +154,7 @@ def create_book(data,
     
     with PdfPages(savefile) as pdf:
         for i in sel:
-            xp, yp = pixel_2_array(lines[0, i, tor_ind], lines[1, i, tor_ind], x[0], y[0])
+            xp, yp = pixel_2_array(lines[0, i, tor_ind], lines[1, i, tor_ind], x[0], y[0], dx, dy)
             if (xp > data.shape[0]) or (xp < 0) or (yp > data.shape[1]) or (yp < 0):
                 continue        
             fig, axes = plt.subplots(3,2, sharex=True, sharey=True)
