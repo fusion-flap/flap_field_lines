@@ -351,3 +351,16 @@ def binning_data(data):
                                data_source = data.data_source,
                                info = data.info)
     return data_bin
+
+def closest_fl_point(x, y, lines):
+    p = np.array([[[x]], [[y]]])
+    lines = lines - p
+    lines = np.sqrt(lines[0, :, :]**2 + lines[1, :, :]**2)
+    pol = np.argmin(np.min(lines, axis=1))
+    tor = np.argmin(np.min(lines, axis=0))
+    return pol, tor
+
+def return_distance(x1, y1, x2, y2, lines, lines_2):
+    pol1, tor1 = closest_fl_point(x1, y1, lines_2)
+    pol2, tor2 = closest_fl_point(x2, y2, lines_2)
+    return np.sqrt(np.sum((lines[:, pol1, tor1] - lines[:, pol2, tor2])**2))
