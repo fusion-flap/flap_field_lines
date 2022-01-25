@@ -303,7 +303,7 @@ def create_slides(data,
             if (xp > data.shape[0]) or (xp < 0) or (yp > data.shape[1]) or (yp < 0):
                 continue        
             fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
-            fig.set_size_inches(5.04, 3.78)
+            fig.set_size_inches(10.08, 7.56)
             axes[0,0].set_ylim(y[0], y[-1])
             axes[0,0].set_xlim(x[0], x[-1])
             d_ref = data.data[xp, yp, :]
