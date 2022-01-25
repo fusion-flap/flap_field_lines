@@ -267,6 +267,91 @@ def create_book(data,
                 plot_ref_line(axes.ravel()[j], lines, i, tor_rp, color_ref)
             pdf.savefig()
 
+
+def create_slides(data, 
+                savefile, 
+                selection, 
+                lines, 
+                pol_r, 
+                tor_r, 
+                surfs, 
+                tor_ind, 
+                title, 
+                corr_v = 1, 
+                color_line = 'k', 
+                color_ref = 'r'):
+    pol_r = flh.process_selection(pol_r)
+    tor_rp = flh.process_selection(tor_r)
+    sel = flh.process_selection(selection)
+
+    x, y, dx, dy = return_view_xy(data)
+
+    t = return_coord(data, 'Time')
+    t = flap.Coordinate(name='Time', 
+                        mode=flap.CoordinateMode(equidistant=True), 
+                        unit = 'Second', 
+                        shape=(len(t)), 
+                        start=t[0], 
+                        step=t[1] - t[0], 
+                        dimension_list=[0])
+
+    dunit  = flap.Unit(name='Amplitude',unit='V')
+    
+    with PdfPages(savefile) as pdf:
+        for i in sel:
+            xp, yp = pixel_2_array(lines[0, i, tor_ind], lines[1, i, tor_ind], x[0], y[0], dx, dy)
+            if (xp > data.shape[0]) or (xp < 0) or (yp > data.shape[1]) or (yp < 0):
+                continue        
+            fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
+            fig.set_size_inches(5.04, 3.78)
+            axes[0,0].set_ylim(y[0], y[-1])
+            axes[0,0].set_xlim(x[0], x[-1])
+            d_ref = data.data[xp, yp, :]
+            d_ref = flap.DataObject(data_array = d_ref, 
+                                    data_unit = dunit, 
+                                    coordinates = [t], 
+                                    data_title = 'Reference', 
+                                    exp_id = '123456_01')
+            data_ccf = data.ccf(ref=d_ref, coordinate='Time', 
+                                options={'Normalize' : True})
+            mid_p = int(np.floor(data_ccf.data.shape[2]) / 2)
+            plot_corr(fig, 
+                    axes.ravel()[0], 
+                    data_ccf.data[:,:,mid_p-4].T[::-1,:], 
+                    -corr_v, 
+                    corr_v, 
+                    'XCorr', 
+                    lines[0, i, tor_ind], 
+                    lines[1, i, tor_ind], 
+                    lines[:, pol_r, :], 
+                    tor_r, 
+                    color_line,  
+                    color_ref, 
+                    title + f', CCF, t = -44' +  r'$\mu$s', 
+                    surfs, 
+                    x, 
+                    y)
+            plot_ref_line(axes.ravel()[0], lines, i, tor_rp, color_ref)
+            for j in range(3):
+                plot_corr(fig, 
+                        axes.ravel()[j + 1], 
+                        data_ccf.data[:,:,mid_p+2*j].T[::-1,:], 
+                        -corr_v, 
+                        corr_v, 
+                        'XCorr', 
+                        lines[0, i, tor_ind], 
+                        lines[1, i, tor_ind], 
+                        lines[:, pol_r, :], 
+                        tor_r, 
+                        color_line,  
+                        color_ref, 
+                        title + f', CCF, t = {j*22}' +  r'$\mu$s', 
+                        surfs, 
+                        x, 
+                        y)
+                plot_ref_line(axes.ravel()[j + 1], lines, i, tor_rp, color_ref)
+            pdf.savefig()
+
 def plot_ref_line(ax, lines, i, tor_rp, color_ref):
     ax.plot(lines[0, i, tor_rp], lines[1, i, tor_rp], c=color_ref, ls=':')
     ax.plot(lines[0, i, 0:260], lines[1, i, 0:260], c=color_ref, ls=':')
