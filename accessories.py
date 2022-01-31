@@ -11,9 +11,10 @@ from matplotlib.backends.backend_pdf import PdfPages
 from scipy.integrate import trapz
 import flap_field_lines.field_line_handler as flh
 import flap
+import flap_w7x_camera
 
-def get_lines(surf, lines, direction, view):
-    handler = flh.FieldLineHandler(configuration='EIM')
+def get_lines(surf, lines, direction, view, config='EIM'):
+    handler = flh.FieldLineHandler(configuration=config)
     handler.update_read_parameters(
         surfaces=surf, lines=lines, direction=direction)
     handler.load_data()
@@ -21,8 +22,8 @@ def get_lines(surf, lines, direction, view):
     lines_2 = view.calc_pixel_coord(lines)
     return lines, lines_2
 
-def get_surfs(surfs, tor_r, direction, view):
-    s_handler = flh.FieldLineHandler(configuration='EIM')
+def get_surfs(surfs, tor_r, direction, view, config='EIM'):
+    s_handler = flh.FieldLineHandler(configuration=config)
     s_handler.update_read_parameters(
         surfaces=surfs, lines=':', tor_range=tor_r, direction=direction)
     s_handler.load_data()
@@ -36,8 +37,8 @@ def give_plot(xlim, ylim):
     plt.ylim(ylim)
     return fig, fig.axes[0]
 
-def stamp_surfs(surf_select, tor_r, view, color='y', direction='backward'):
-    _, s2 = get_surfs(surf_select, tor_r, direction, view)
+def stamp_surfs(surf_select, tor_r, view, color='y', direction='backward', config='EIM'):
+    _, s2 = get_surfs(surf_select, tor_r, direction, view, config)
     if len(s2.shape) < 3:
         plt.plot(s2[0, :], s2[1, :], color)
     else:
@@ -449,3 +450,29 @@ def return_distance(x1, y1, x2, y2, lines, lines_2):
     pol1, tor1 = closest_fl_point(x1, y1, lines_2)
     pol2, tor2 = closest_fl_point(x2, y2, lines_2)
     return np.sqrt(np.sum((lines[:, pol1, tor1] - lines[:, pol2, tor2])**2))
+
+def return_raw_data(shot, time):
+    opts = {'Datapath' : '/data/W7-X', 'Time' : time, 'Timing path' : '/data/W7-X/processed_data/Photron/integ_data', 'Max_size' : 24}
+    data = flap_w7x_camera.w7x_camera_get_data(shot, 'AEQ21_PHOTRON_ROIP1', options=opts)
+    return data
+
+def initial_process(shot, time, t0, tend, save_path):
+    data = return_raw_data(shot, time)
+    t = return_coord(data, 'Time')
+    data = data.slice_data(slicing={'Time' : t[t0:tend]})
+    data.detrend(coordinate='Time', options={'Trend removal': 'Mean'})
+    data.save(save_path + '/' + shot + '.dat', protocol=4)
+    filter_options = {'Type': 'Bandpass', 
+                      'f_low': 1000, 
+                      'f_high': 11000, 
+                      'Tau': 1.1111111234640703e-05, 
+                      'Design': 'Chebyshev II', 
+                      'Steepness': 0.2, 
+                      'Loss': 1, 
+                      'Attenuation': 20}
+    data_fil = data.filter_data(coordinate='Time', options=filter_options)
+    data_fil.save(save_path + '/' + shot + '_fil.dat', protocol=4)
+    data = binning_data(data)
+    data.save(save_path + '/' + shot + '_bin.dat', protocol=4)
+    data_fil = data.filter_data(coordinate='Time', options=filter_options)
+    data_fil.save(save_path + '/' + shot + '_bin_fil.dat', protocol=4)
