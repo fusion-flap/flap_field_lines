@@ -461,7 +461,7 @@ def initial_process(shot, time, t0, tend, save_path):
     t = return_coord(data, 'Time')
     data = data.slice_data(slicing={'Time' : t[t0:tend]})
     data.detrend(coordinate='Time', options={'Trend removal': 'Mean'})
-    data.save(save_path + '/' + shot + '.dat', protocol=4)
+    data.save(save_path + '/' + shot + f'{t0}.dat', protocol=4)
     filter_options = {'Type': 'Bandpass', 
                       'f_low': 1000, 
                       'f_high': 11000, 
@@ -471,8 +471,8 @@ def initial_process(shot, time, t0, tend, save_path):
                       'Loss': 1, 
                       'Attenuation': 20}
     data_fil = data.filter_data(coordinate='Time', options=filter_options)
-    data_fil.save(save_path + '/' + shot + '_fil.dat', protocol=4)
+    data_fil.save(save_path + '/' + shot + f'{t0}_fil.dat', protocol=4)
     data = binning_data(data)
-    data.save(save_path + '/' + shot + '_bin.dat', protocol=4)
+    data.save(save_path + '/' + shot + f'{t0}_bin.dat', protocol=4)
     data_fil = data.filter_data(coordinate='Time', options=filter_options)
-    data_fil.save(save_path + '/' + shot + '_bin_fil.dat', protocol=4)
+    data_fil.save(save_path + '/' + shot + f'{t0}_bin_fil.dat', protocol=4)
