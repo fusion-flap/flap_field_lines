@@ -461,6 +461,7 @@ def initial_process(shot, time, t0, tend, save_path):
     t = return_coord(data, 'Time')
     data = data.slice_data(slicing={'Time' : t[t0:tend]})
     data.detrend(coordinate='Time', options={'Trend removal': 'Mean'})
+    shot.replace('.', '_')
     data.save(save_path + '/' + shot + f'{t0}.dat', protocol=4)
     filter_options = {'Type': 'Bandpass', 
                       'f_low': 1000, 
