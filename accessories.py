@@ -462,9 +462,9 @@ def initial_process(shot, time, t0, tend, save_path):
     data = data.slice_data(slicing={'Time' : t[t0:tend]})
     data.detrend(coordinate='Time', options={'Trend removal': 'Mean'})
     shot = shot.replace('.', '_')
-    data.get_coordinte_object('Time').mode.equidistant = True
-    data.get_coordinte_object('Time').start = t[t0]
-    data.get_coordinte_object('Time').step = t[t0 + 1] - t[t0]
+    data.get_coordinate_object('Time').mode.equidistant = True
+    data.get_coordinate_object('Time').start = t[t0]
+    data.get_coordinate_object('Time').step = t[t0 + 1] - t[t0]
     data.save(save_path + '/' + shot + f'_{t0}.dat', protocol=4)
     filter_options = {'Type': 'Bandpass', 
                       'f_low': 1000, 
