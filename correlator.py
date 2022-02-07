@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from scipy.integrate import trapz
 import flap_field_lines.field_line_handler as flh
+import flap_field_lines.image_projector as imp
 import flap_field_lines.accessories as acc
 import flap
 
@@ -25,22 +26,17 @@ class Correlator:
 
     def __init__(self,
                  data_file, 
-                 save_path, 
-                 selection, 
-                 lines, 
-                 tor_ind) -> None:
+                 save_path) -> None:
         
         f = io.open(data_file, 'rb')
-        data = pickle.load(f)
+        self.data = pickle.load(f)
 
         f.close()
 
-        sel = flh.process_selection(selection)
+        self.x, self.y, self.dx, self.dy = acc.return_view_xy(self.data)
 
-        x, y, dx, dy = acc.return_view_xy(data)
-
-        t = acc.return_coord(data, 'Time')
-        t = flap.Coordinate(name='Time', 
+        t = acc.return_coord(self.data, 'Time')
+        self.t = flap.Coordinate(name='Time', 
                             mode=flap.CoordinateMode(equidistant=True), 
                             unit = 'Second', 
                             shape=(len(t)), 
@@ -48,23 +44,41 @@ class Correlator:
                             step=t[1] - t[0], 
                             dimension_list=[0])
 
-        dunit  = flap.Unit(name='Amplitude',unit='V')
+        self.dunit  = flap.Unit(name='Amplitude',unit='V')
 
+        self.save_path = save_path
         try:
-            os.mkdir(save_path)
+            os.mkdir(self.save_path)
         except FileExistsError:
             pass
 
-        for i in sel:
-            xp, yp = acc.pixel_2_array(lines[0, i, tor_ind], lines[1, i, tor_ind], x[0], y[0], dx, dy)
-            if (xp >= data.shape[0]) or (xp < 0) or (yp >= data.shape[1]) or (yp < 0):
+        self.surface = None
+        self.lines = None
+        self.selection = []
+    
+    def select_contour(self):
+        pass
+
+    def select_line(self):
+        pass
+
+    def select(self):
+        pass
+
+    def correlate(self, selection):
+        for sel in selection:
+            pol, tor = sel[0], sel[1]
+            xp, yp = acc.pixel_2_array(self.lines[0, pol, tor], 
+                                       self.lines[1, pol, tor], 
+                                       self.x[0], self.y[0], self.dx, self.dy)
+            if (xp >= self.data.shape[0]) or (xp < 0) or (yp >= self.data.shape[1]) or (yp < 0):
                 continue        
-            d_ref = data.data[xp, yp, :]
+            d_ref = self.data.data[xp, yp, :]
             d_ref = flap.DataObject(data_array = d_ref, 
-                                    data_unit = dunit, 
-                                    coordinates = [t], 
+                                    data_unit = self.dunit, 
+                                    coordinates = [self.t], 
                                     data_title = 'Reference', 
                                     exp_id = '123456_01')
-            data_ccf = data.ccf(ref=d_ref, coordinate='Time', 
-                                options={'Normalize' : True})
-            data_ccf.save(save_path + f'/ccf_{tor_ind}_{i}.dat', protocol=4)
+            data_ccf = self.data.ccf(ref=d_ref, coordinate='Time', 
+                                     options={'Normalize' : True})
+            data_ccf.save(self.save_path + f'/ccf_{self.surface}_{tor}_{pol}.dat', protocol=4)
