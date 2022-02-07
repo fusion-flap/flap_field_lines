@@ -57,7 +57,7 @@ class Correlator:
 
         for i in sel:
             xp, yp = acc.pixel_2_array(lines[0, i, tor_ind], lines[1, i, tor_ind], x[0], y[0], dx, dy)
-            if (xp > data.shape[0]) or (xp < 0) or (yp > data.shape[1]) or (yp < 0):
+            if (xp >= data.shape[0]) or (xp < 0) or (yp >= data.shape[1]) or (yp < 0):
                 continue        
             d_ref = data.data[xp, yp, :]
             d_ref = flap.DataObject(data_array = d_ref, 
