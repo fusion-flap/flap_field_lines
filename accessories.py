@@ -456,7 +456,7 @@ def return_raw_data(shot, time):
     data = flap_w7x_camera.w7x_camera_get_data(shot, 'AEQ21_PHOTRON_ROIP1', options=opts)
     return data
 
-def initial_process(shot, time, t0, tend, save_path):
+def initial_process(shot, time, t0, tend, save_path, f_low=2000, f_high=11000):
     data = return_raw_data(shot, time)
     t = return_coord(data, 'Time')
     data = data.slice_data(slicing={'Time' : t[t0:tend]})
@@ -467,16 +467,16 @@ def initial_process(shot, time, t0, tend, save_path):
     data.get_coordinate_object('Time').step = t[t0 + 1] - t[t0]
     data.save(save_path + '/' + shot + f'_{t0}.dat', protocol=4)
     filter_options = {'Type': 'Bandpass', 
-                      'f_low': 1000, 
-                      'f_high': 11000, 
+                      'f_low': f_low, 
+                      'f_high': f_high, 
                       'Tau': 1.1111111234640703e-05, 
                       'Design': 'Chebyshev II', 
                       'Steepness': 0.2, 
                       'Loss': 1, 
                       'Attenuation': 20}
     data_fil = data.filter_data(coordinate='Time', options=filter_options)
-    data_fil.save(save_path + '/' + shot + f'_{t0}_fil.dat', protocol=4)
+    data_fil.save(save_path + '/' + shot + f'_{t0}_fil_{f_low}Hz.dat', protocol=4)
     data = binning_data(data)
     data.save(save_path + '/' + shot + f'_{t0}_bin.dat', protocol=4)
     data_fil = data.filter_data(coordinate='Time', options=filter_options)
-    data_fil.save(save_path + '/' + shot + f'_{t0}_bin_fil.dat', protocol=4)
+    data_fil.save(save_path + '/' + shot + f'_{t0}_bin_fil_{f_low}Hz.dat', protocol=4)
