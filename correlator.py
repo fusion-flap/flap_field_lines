@@ -26,7 +26,10 @@ class Correlator:
 
     def __init__(self,
                  data_file, 
-                 save_path) -> None:
+                 save_path,
+                 surface=None,
+                 view=None,
+                 config=None) -> None:
         
         f = io.open(data_file, 'rb')
         self.data = pickle.load(f)
@@ -51,13 +54,25 @@ class Correlator:
             os.mkdir(self.save_path)
         except FileExistsError:
             pass
-
-        self.surface = None
-        self.lines = None
-        self.selection = []
+        
+        if surface is not None:
+            self.update_lines(surface, view, config)
+        else:
+            self.surface = None
+            self.lines = None
+            
+        self.pol_selection = []
+        self.tor_selection = []
     
-    def select_contour(self):
-        pass
+    def update_lines(self, surface, view, config='EIM'):
+        if type(view) is not imp.ImageProjector:
+            raise TypeError('View should be of type ImageProjector!íqn')
+
+        _, self.lines = acc.get_lines(surface, ':', 'both', view, config)
+
+    def select_contour(self, tor_ind, pol_sel):
+        self.pol_selection = flh.process_selection(pol_sel)
+        self.tor_selection = [tor_ind for i in range(len(self.pol_selection))]
 
     def select_line(self):
         pass
@@ -65,9 +80,9 @@ class Correlator:
     def select(self):
         pass
 
-    def correlate(self, selection):
-        for sel in selection:
-            pol, tor = sel[0], sel[1]
+    def correlate(self):
+        for i in range(len(self.pol_selection)):
+            pol, tor = self.pol_selection[i], self.tor_selection[i]
             xp, yp = acc.pixel_2_array(self.lines[0, pol, tor], 
                                        self.lines[1, pol, tor], 
                                        self.x[0], self.y[0], self.dx, self.dy)
