@@ -60,7 +60,7 @@ class Correlator:
         else:
             self.surface = None
             self.lines = None
-            
+
         self.pol_selection = []
         self.tor_selection = []
     
@@ -69,6 +69,7 @@ class Correlator:
             raise TypeError('View should be of type ImageProjector!íqn')
 
         _, self.lines = acc.get_lines(surface, ':', 'both', view, config)
+        self.surface = surface
 
     def select_contour(self, tor_ind, pol_sel):
         self.pol_selection = flh.process_selection(pol_sel)
