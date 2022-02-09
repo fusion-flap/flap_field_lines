@@ -72,15 +72,19 @@ class Correlator:
         self.surface = surface
 
     def select_contour(self, tor_ind, pol_sel):
-        self.pol_selection = flh.process_selection(pol_sel)
+        self.tor_selection = flh.process_selection(tor_sel)
         self.tor_selection = [tor_ind for i in range(len(self.pol_selection))]
 
     def select_line(self, tor_sel, pol_ind):
         self.tor_selection = flh.process_selection(tor_sel)
         self.pol_selection = [pol_ind for i in range(len(self.tor_selection))]
 
-    def select(self):
-        pass
+    def select(self, tor_sel, pol_sel):
+        self.tor_selection = flh.process_selection(tor_sel)
+        self.tor_selection = flh.process_selection(tor_sel)
+        if len(self.pol_selection) != len(self.tor_selection):
+            raise ValueError('Numer of given poloidal coordinates does not \
+                              match the number of toroidal coordinates.\n')
 
     def correlate(self):
         for i in range(len(self.pol_selection)):
