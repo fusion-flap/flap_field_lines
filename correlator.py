@@ -75,8 +75,9 @@ class Correlator:
         self.pol_selection = flh.process_selection(pol_sel)
         self.tor_selection = [tor_ind for i in range(len(self.pol_selection))]
 
-    def select_line(self):
-        pass
+    def select_line(self, tor_sel, pol_ind):
+        self.tor_selection = flh.process_selection(tor_sel)
+        self.pol_selection = [pol_ind for i in range(len(self.tor_selection))]
 
     def select(self):
         pass
