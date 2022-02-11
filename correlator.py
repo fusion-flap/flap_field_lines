@@ -132,7 +132,7 @@ class Correlator:
         else:
             pass
 
-        for i in range(1, len(self.pol_selection)):
+        for i in range(1, len(self.selection)):
             data_ccf = self.return_corr(i)
             ccf_arrays = np.concatenate((ccf_arrays, 
                                          data_ccf.data[..., np.newaxis]), 
