@@ -91,13 +91,17 @@ class Correlator:
         self.remove_out_of_frame()
         self.selection_type = 'mix'
 
+    def is_out_of_frame(self, sel):
+        xp, yp = acc.pixel_2_array(self.lines[0, sel[0], sel[1]], 
+                                   self.lines[1, sel[0], sel[1]], 
+                                   self.x[0], self.y[0], self.dx, self.dy)
+        if (xp >= self.data.shape[0]) or (xp < 0) or (yp >= self.data.shape[1]) or (yp < 0):
+            return True
+        else:
+            return False
+
     def remove_out_of_frame(self):
-        for sel in self.selection:
-            xp, yp = acc.pixel_2_array(self.lines[0, sel[0], sel[1]], 
-                                       self.lines[1, sel[0], sel[1]], 
-                                       self.x[0], self.y[0], self.dx, self.dy)
-            if (xp >= self.data.shape[0]) or (xp < 0) or (yp >= self.data.shape[1]) or (yp < 0):
-                self.selection.remove(sel)
+        self.selection = [sel for sel in self.selection if not self.is_out_of_frame(sel)]
 
     def return_corr(self, i):
         pol, tor = self.selection[i][0], self.selection[i][1]
