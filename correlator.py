@@ -25,7 +25,8 @@ class Correlator:
                  save_path,
                  surface=None,
                  view=None,
-                 config=None) -> None:
+                 config=None,
+                 info='') -> None:
         
         f = io.open(data_file, 'rb')
         self.data = pickle.load(f)
@@ -59,6 +60,7 @@ class Correlator:
 
         self.selection = []
         self.selection_type = None
+        self.info=info
 
     def update_lines(self, surface, view, config='EIM'):
         if type(view) is not imp.ImageProjector:
@@ -169,4 +171,9 @@ class Correlator:
                                    data_unit = dunit, 
                                    coordinates = [t, x, y, ref_coord])
 
-        data_ccf.save(self.save_path + f'/ccf_{self.surface}_{self.selection_type}{ref_coord_id}.dat', protocol=4)
+        save_file = f'/ccf_{self.surface}_{self.selection_type}{ref_coord_id}'
+        if self.info != '':
+            save_file += '_' + self.info
+        save_file += '.dat'
+
+        data_ccf.save(self.save_path + '/' + save_file, protocol=4)
