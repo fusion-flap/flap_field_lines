@@ -465,6 +465,9 @@ def initial_process(shot, time, t0, tend, save_path, f_low=2000, f_high=11000):
     data.get_coordinate_object('Time').mode.equidistant = True
     data.get_coordinate_object('Time').start = t[t0]
     data.get_coordinate_object('Time').step = t[t0 + 1] - t[t0]
+    data.data = data.data.swapaxes(0,1)[::-1,:,:]
+    data.get_coordinatet_object('Image x').start = x[0]
+    data.get_coordinatet_object('Image y').start = y[0]
     data.save(save_path + '/' + shot + f'_{t0}.dat', protocol=4)
     filter_options = {'Type': 'Bandpass', 
                       'f_low': f_low, 
