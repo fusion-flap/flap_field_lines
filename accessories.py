@@ -468,10 +468,8 @@ def initial_process(shot, time, t0, tend, save_path, f_low=2000, f_high=11000):
 
     x, y, _, _ = return_view_xy(data)
     data.data = data.data.swapaxes(0,1)[::-1,:,:]
-    data.get_coordinate_object('Image x').start = x[0]
-    data.get_coordinate_object('Image y').start = y[0]
-    data.get_coordinate_object('Image x').dimension_list = [1]
-    data.get_coordinate_object('Image y').dimension_list = [0]
+    data.get_coordinate_object('Image x').start = y[0]
+    data.get_coordinate_object('Image y').start = x[0]
     data.shape = (data.shape[1], data.shape[0], data.shape[2])
     
     data.save(save_path + '/' + shot + f'_{t0}.dat', protocol=4)
