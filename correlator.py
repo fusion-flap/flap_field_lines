@@ -94,7 +94,7 @@ class Correlator:
     def is_out_of_frame(self, sel):
         xp, yp = acc.pixel_2_array(self.lines[0, sel[0], sel[1]], 
                                    self.lines[1, sel[0], sel[1]], 
-                                   self.x[0], self.y[0], self.dx, self.dy)
+                                   self.x, self.y, self.dx, self.dy)
         if (xp >= self.data.shape[0]) or (xp < 0) or (yp >= self.data.shape[1]) or (yp < 0):
             return True
         else:
@@ -107,7 +107,7 @@ class Correlator:
         pol, tor = self.selection[i][0], self.selection[i][1]
         xp, yp = acc.pixel_2_array(self.lines[0, pol, tor], 
                                    self.lines[1, pol, tor], 
-                                   self.x[0], self.y[0], self.dx, self.dy)
+                                   self.x, self.y, self.dx, self.dy)
                 
         d_ref = self.data.data[xp, yp, :]
         d_ref = flap.DataObject(data_array = d_ref, 
