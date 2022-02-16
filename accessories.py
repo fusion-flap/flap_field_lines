@@ -72,10 +72,10 @@ def plot_frame(data, frame, x=[316, 707], y=[384, 639]):
     im = plt.imshow(data.data[:,:,frame].T[::-1,:], extent=[x[0], x[-1], y[0], y[-1]])
     return im, fig
 
-def pixel_2_array(x, y, x0, y0, dx=1, dy=1):
-    x = x - x0
-    y = y-y0
-    return int(np.floor(x / dx)), int(np.floor(y / dy))
+def pixel_2_array(xp, yp, x, y, dx=1, dy=1):
+    xp = xp - x[0]
+    yp = y[-1] - yp
+    return int(np.floor(xp / dx)), int(np.floor(yp / dy))
 
 def array_2_pixel(x, y, x0, y0):
     x = x + x0
