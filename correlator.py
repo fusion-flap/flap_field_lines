@@ -68,6 +68,7 @@ class Correlator:
 
         _, self.lines = acc.get_lines(surface, ':', 'both', view, config)
         self.surface = surface
+        self.info={'surface' : surface, 'config' : config}
 
     def select_contour(self, tor_ind, pol_sel):
         pol_sel = flh.process_selection(pol_sel)
@@ -167,7 +168,8 @@ class Correlator:
 
         data_ccf = flap.DataObject(data_array = ccf_arrays, 
                                    data_unit = dunit, 
-                                   coordinates = [t, x, y, ref_tor, ref_pol])
+                                   coordinates = [t, x, y, ref_tor, ref_pol],
+                                   info = self.info)
 
         save_file = f'/ccf_{self.surface}_{self.selection_type}{ref_coord_id}'
         if self.info != '':
