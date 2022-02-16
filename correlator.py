@@ -145,35 +145,29 @@ class Correlator:
         ref_coord_id = ""
 
         if self.selection_type == 'tor':
-            ref_coord = flap.Coordinate(name='Poloidal coordinate', 
-                                        mode=flap.CoordinateMode(equidistant=False), 
-                                        unit = 'deg', 
-                                        shape=(len(self.selection)), 
-                                        start=self.selection[0][0], 
-                                        values= [sel[0] for sel in self.selection], 
-                                        dimension_list=[3])
             ref_coord_id = f'_{self.selection[0][1]}'
         elif self.selection_type == 'pol':
-            ref_coord = flap.Coordinate(name='Toroidal coordinate', 
-                                        mode=flap.CoordinateMode(equidistant=False), 
-                                        unit = 'bin', 
-                                        shape=(len(self.selection)), 
-                                        start=self.selection[0][1],
-                                        values= [sel[1] for sel in self.selection], 
-                                        dimension_list=[3])
             ref_coord_id = f'_{self.selection[0][0]}'
-        elif self.selection_type == 'mix':
-            ref_coord = flap.Coordinate(name='Reference point order', 
-                                        mode=flap.CoordinateMode(equidistant=True), 
-                                        unit = 'bin', 
-                                        shape=(len(self.selection)), 
-                                        start=0,
-                                        values= [i for i in range(len(self.selection))], 
-                                        dimension_list=[3])
+
+        ref_pol = flap.Coordinate(name='Poloidal coordinate', 
+                                  mode=flap.CoordinateMode(equidistant=False), 
+                                  unit = 'deg', 
+                                  shape=(len(self.selection)), 
+                                  start=self.selection[0][0], 
+                                  values= [sel[0] for sel in self.selection], 
+                                  dimension_list=[3])
+
+        ref_tor = flap.Coordinate(name='Toroidal coordinate', 
+                                    mode=flap.CoordinateMode(equidistant=False), 
+                                    unit = 'bin', 
+                                    shape=(len(self.selection)), 
+                                    start=self.selection[0][1],
+                                    values= [sel[1] for sel in self.selection], 
+                                    dimension_list=[3])
 
         data_ccf = flap.DataObject(data_array = ccf_arrays, 
                                    data_unit = dunit, 
-                                   coordinates = [t, x, y, ref_coord])
+                                   coordinates = [t, x, y, ref_tor, ref_pol])
 
         save_file = f'/ccf_{self.surface}_{self.selection_type}{ref_coord_id}'
         if self.info != '':
