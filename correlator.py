@@ -60,7 +60,7 @@ class Correlator:
 
         self.selection = []
         self.selection_type = None
-        self.info=info
+        self.other=info
 
     def update_lines(self, surface, view, config='EIM'):
         if type(view) is not imp.ImageProjector:
@@ -172,8 +172,8 @@ class Correlator:
                                    info = self.info)
 
         save_file = f'/ccf_{self.surface}_{self.selection_type}{ref_coord_id}'
-        if self.info != '':
-            save_file += '_' + self.info
+        if self.other != '':
+            save_file += '_' + self.other
         save_file += '.dat'
 
         data_ccf.save(self.save_path + '/' + save_file, protocol=4)
