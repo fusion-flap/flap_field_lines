@@ -21,14 +21,34 @@ import flap
 
 class CorrPlotter:
 
-    def __init__(self, corr_file, view, save_path) -> None:
-        pass
+    def __init__(self, corr_file, ref_tor = 3625, save_path=None) -> None:
+        f = io.open(corr_file, 'rb')
+        
+        self.data = pickle.load(f)
+
+        f.close()
+
+        if save_path is not None:
+            self.save_path = save_path
+            try:
+                os.mkdir(self.save_path)
+            except FileExistsError:
+                pass
+        else:
+            self.save_path = os.path.dirname(corr_file)
+
+        _, self.lines = acc.get_lines(self.data.info['surface'], 
+                                      ':', 'both', 
+                                      self.data.info['view'], 
+                                      self.data.info['config'])
+        _, self.surfs = acc.get_surfs(self.data.info['surface'], 
+                                      ref_tor,
+                                      'both', 
+                                      self.data.info['view'], 
+                                      self.data.info['config'])
 
     def create_slides(self,
-                      data, 
                       savefile, 
-                    selection, 
-                    lines, 
                     pol_r, 
                     tor_r, 
                     surfs, 
@@ -38,29 +58,18 @@ class CorrPlotter:
                     color_line = 'k', 
                     color_ref = 'r'):
 
-        x, y, dx, dy = return_view_xy(data)
-        
+        savefile = self.save_path + '/' + savefile
+
         with PdfPages(savefile) as pdf:
-            for i in sel:
-                xp, yp = pixel_2_array(lines[0, i, tor_ind], lines[1, i, tor_ind], x[0], y[0], dx, dy)
-                if (xp > data.shape[0]) or (xp < 0) or (yp > data.shape[1]) or (yp < 0):
-                    continue        
+            for i in range(self.data.shape[3]): 
                 fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
                 fig.set_size_inches(10.08, 7.56)
                 axes[0,0].set_ylim(y[0], y[-1])
                 axes[0,0].set_xlim(x[0], x[-1])
-                d_ref = data.data[xp, yp, :]
-                d_ref = flap.DataObject(data_array = d_ref, 
-                                        data_unit = dunit, 
-                                        coordinates = [t], 
-                                        data_title = 'Reference', 
-                                        exp_id = '123456_01')
-                data_ccf = data.ccf(ref=d_ref, coordinate='Time', 
-                                    options={'Normalize' : True})
-                mid_p = int(np.floor(data_ccf.data.shape[2]) / 2)
-                plot_corr(fig, 
+                mid_p = int(np.floor(self.data.shape[2]) / 2)
+                acc.plot_corr(fig, 
                         axes.ravel()[0], 
-                        data_ccf.data[:,:,mid_p-4].T[::-1,:], 
+                        self.data.data[:,:,mid_p-4].T[::-1,:], 
                         -corr_v, 
                         corr_v, 
                         'XCorr', 
