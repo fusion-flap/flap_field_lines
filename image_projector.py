@@ -84,6 +84,9 @@ class ImageProjector:
         else:
             self.__set_up_projection(enh, alpha, xoff, yoff)
     
+    def __str__(self) -> str:
+        return self.viewpoint + ', ' + self.shot + ', ' + self.cam
+    
     @classmethod
     def from_file(cls, 
                   view, 
