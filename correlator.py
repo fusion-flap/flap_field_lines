@@ -68,7 +68,7 @@ class Correlator:
 
         _, self.lines = acc.get_lines(surface, ':', 'both', view, config)
         self.surface = surface
-        self.info={'surface' : surface, 'config' : config}
+        self.info={'surface' : surface, 'config' : config, 'view' : view}
 
     def select_contour(self, tor_ind, pol_sel):
         pol_sel = flh.process_selection(pol_sel)
