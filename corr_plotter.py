@@ -21,7 +21,7 @@ import flap
 
 class CorrPlotter:
 
-    def __init__(self, corr_file, ref_tor=3625, save_path=None) -> None:
+    def __init__(self, corr_file, plot_surfs=None, ref_tor=3625, save_path=None) -> None:
         f = io.open(corr_file, 'rb')
         
         self.data = pickle.load(f)
@@ -43,11 +43,14 @@ class CorrPlotter:
                                       ':', 'both', 
                                       self.data.info['view'], 
                                       self.data.info['config'])
-        _, self.surfs = acc.get_surfs(self.data.info['surface'], 
-                                      ref_tor,
-                                      'both', 
-                                      self.data.info['view'], 
-                                      self.data.info['config'])
+        if plot_surfs is not None:
+            _, self.surfs = acc.get_surfs(plot_surfs, 
+                                        ref_tor,
+                                        'both', 
+                                        self.data.info['view'], 
+                                        self.data.info['config'])
+        else:
+            self.surfs = None
 
     def create_slides(self,
                       pol_r, 
