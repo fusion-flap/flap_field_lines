@@ -169,7 +169,8 @@ class Correlator:
         data_ccf = flap.DataObject(data_array = ccf_arrays, 
                                    data_unit = dunit, 
                                    coordinates = [t, x, y, ref_tor, ref_pol],
-                                   info = self.info)
+                                   info = self.info,
+                                   exp_id = self.data.exp_id)
 
         save_file = f'/ccf_{self.surface}_{self.selection_type}{ref_coord_id}'
         if self.other != '':
