@@ -37,7 +37,7 @@ class CorrPlotter:
         else:
             self.save_path = os.path.dirname(corr_file)
 
-        self.save_title = corr_file.split('.')[0]
+        self.save_title = os.path.basename(corr_file).split('.')[0]
 
         _, self.lines = acc.get_lines(self.data.info['surface'], 
                                       ':', 'both', 
