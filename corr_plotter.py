@@ -59,7 +59,7 @@ class CorrPlotter:
                       color_line = 'k', 
                       color_ref = 'r'):
 
-        savefile = self.save_path + self.save_title + '.pdf'
+        savefile = self.save_path + '/ ' + self.save_title + '.pdf'
 
         x, y, _, _ = acc.return_view_xy(self.data)
 
@@ -98,6 +98,7 @@ class CorrPlotter:
                                   y)
                     acc.plot_ref_line(axes.ravel()[j], self.lines, ref_pol[i], tor_r_pro, color_ref)
                 pdf.savefig()
+                plt.close()
                 fig, axes = self.make_slide_layout(x, y)
                 t_lags = [-4, 0, 2, 4]
                 for j in range(4):
@@ -120,6 +121,7 @@ class CorrPlotter:
                                   y)
                     acc.plot_ref_line(axes.ravel()[j], self.lines, ref_pol[i], tor_r_pro, color_ref)
                 pdf.savefig()
+                plt.close()
 
     def make_slide_layout(self, x, y):
         fig, axes = plt.subplots(2,2, sharex=True, sharey=True)
