@@ -21,7 +21,7 @@ import flap
 
 class CorrPlotter:
 
-    def __init__(self, corr_file, ref_tor = 3625, save_path=None) -> None:
+    def __init__(self, corr_file, ref_tor=3625, save_path=None) -> None:
         f = io.open(corr_file, 'rb')
         
         self.data = pickle.load(f)
@@ -56,7 +56,7 @@ class CorrPlotter:
                       color_line = 'k', 
                       color_ref = 'r'):
 
-        savefile = self.save_path + '/' + self.save_title + '.pdf'
+        savefile = self.save_path + self.save_title + '.pdf'
 
         x, y, _, _ = acc.return_view_xy(self.data)
 
