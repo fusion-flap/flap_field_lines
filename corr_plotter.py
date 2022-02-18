@@ -77,6 +77,7 @@ class CorrPlotter:
             for i in range(len(ref_tor)): 
                 mid_p = int(np.floor(self.data.shape[2]) / 2)
                 fig, axes = self.make_slide_layout(x, y)
+                fig.suptitle(f'Field Line: {ref_pol[i]}')
                 t_lags = [-4, -2, 0, 4]
                 for j in range(4):
                     t_j = t_lags[j]
@@ -100,6 +101,7 @@ class CorrPlotter:
                 pdf.savefig()
                 plt.close()
                 fig, axes = self.make_slide_layout(x, y)
+                fig.suptitle(f'Field Line: {ref_pol[i]}')
                 t_lags = [-4, 0, 2, 4]
                 for j in range(4):
                     t_j = t_lags[j]
