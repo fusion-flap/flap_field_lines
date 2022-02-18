@@ -79,7 +79,7 @@ class CorrPlotter:
                     t_j = t_lags[j]
                     acc.plot_corr(fig, 
                                   axes.ravel()[j], 
-                                  self.data.data[:,:,mid_p + t_j], 
+                                  self.data.data[:,:,mid_p + t_j, i], 
                                   -corr_v, 
                                   corr_v, 
                                   'XCorr', 
@@ -101,7 +101,7 @@ class CorrPlotter:
                     t_j = t_lags[j]
                     acc.plot_corr(fig, 
                                   axes.ravel()[j], 
-                                  self.data.data[:,:,mid_p + t_j], 
+                                  self.data.data[:,:,mid_p + t_j, i], 
                                   -corr_v, 
                                   corr_v, 
                                   'XCorr', 
