@@ -75,7 +75,7 @@ def plot_frame(data, frame, x=[316, 707], y=[384, 639]):
 def pixel_2_array(xp, yp, x, y, dx=1, dy=1):
     xp = xp - x[0]
     yp = y[-1] - yp
-    return int(np.floor(yp / dy)), int(np.floor(xp / dx))
+    return np.floor(yp / dy).astype('int'), np.floor(xp / dx).astype('int')
 
 def array_2_pixel(x, y, x0, y0):
     x = x + x0
