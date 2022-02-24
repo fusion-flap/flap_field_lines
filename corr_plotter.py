@@ -158,7 +158,7 @@ class CorrPlotter:
 
         with PdfPages(savefile) as pdf:
             for i in range(len(ref_tor)): 
-                max_p = t[np.argmax(self.data.data[:,:,:,i], axis=2)] * dt
+                max_p = t[np.argmax(self.data.data[:,:,:,i], axis=2)] * 10**6
                 fig, axes = self.make_slide_layout(x, y)
                 fig.suptitle(f'Field Line: {ref_pol[i]}')
                 t_lags = [3, 7]
