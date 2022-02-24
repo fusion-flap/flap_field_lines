@@ -158,7 +158,7 @@ class CorrPlotter:
 
         with PdfPages(savefile) as pdf:
             for i in range(len(ref_tor)): 
-                max_p = t[np.argmax(self.data.data[:,:,:,i], axis=2)]
+                max_p = t[np.argmax(self.data.data[:,:,:,i], axis=2)] * dt
                 fig, axes = self.make_slide_layout(x, y)
                 fig.suptitle(f'Field Line: {ref_pol[i]}')
                 t_lags = [3, 7]
@@ -184,7 +184,7 @@ class CorrPlotter:
                 
                 max_v = np.amax(self.data.data[:,:,:,i], axis=2)
                 acc.plot_corr(fig, 
-                              axes.ravel()[3], 
+                              axes.ravel()[2], 
                               max_v, 
                               -corr_v, 
                               corr_v, 
@@ -199,6 +199,6 @@ class CorrPlotter:
                               self.surfs, 
                               x, 
                               y)
-                acc.plot_ref_line(axes.ravel()[3], self.lines, ref_pol[i], tor_r_pro, color_ref)
+                acc.plot_ref_line(axes.ravel()[2], self.lines, ref_pol[i], tor_r_pro, color_ref)
                 pdf.savefig()
                 plt.close()
