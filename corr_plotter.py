@@ -213,6 +213,7 @@ class CorrPlotter:
                               y)
                 acc.plot_ref_line(axes.ravel()[2], self.lines, ref_pol[i], tor_r_pro, color_ref)
 
+                print(f'\n\n{ref_tor[i]}, {type(ref_tor[i])}\n\n')
                 xp, yp, pp = self.calc_surf_contour(self.data.info['surface'], ref_tor[i])
                 ax = axes.ravel(3)
                 ax.set_xlabel('Poloidal coordinate (deg)', size='small')
