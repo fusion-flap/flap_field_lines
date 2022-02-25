@@ -82,6 +82,14 @@ def array_2_pixel(x, y, x0, y0):
     y = y + y0
     return x, y
 
+def is_out_of_frame(data, x0, y0):
+    x, y, dx, dy = return_view_xy(data)
+    xp, yp = pixel_2_array(x0, y0, x, y, dx, dy)
+    if (xp >= data.shape[0]) or (xp < 0) or (yp >= data.shape[1]) or (yp < 0):
+        return True
+    else:
+        return False
+    
 def plot_corr(fig, 
               ax, 
               data, 
@@ -97,11 +105,12 @@ def plot_corr(fig,
               title, 
               surfs=None, 
               x=[316, 707], 
-              y=[384, 639]):
+              y=[384, 639],
+              c_map='bwr'):
     ax.set_xlabel('x (px)', size='small')
     ax.set_ylabel('y (px)', size='small')
     ax.tick_params(axis='both', labelsize='small')
-    im = ax.imshow(data, cmap='bwr', vmin=vmin, vmax=vmax, extent=[x[0], x[-1], y[0], y[-1]])
+    im = ax.imshow(data, cmap=c_map, vmin=vmin, vmax=vmax, extent=[x[0], x[-1], y[0], y[-1]])
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(label, size='small')
     cbar.ax.tick_params(labelsize='small')
