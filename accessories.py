@@ -90,7 +90,7 @@ def is_out_of_frame(data, xp, yp):
     
 def unique_list(lst):
     u_list = []
-    for x in list:
+    for x in lst:
         if x not in u_list:
             u_list.append(x)
     return u_list
