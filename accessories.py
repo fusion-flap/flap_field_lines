@@ -82,9 +82,7 @@ def array_2_pixel(x, y, x0, y0):
     y = y + y0
     return x, y
 
-def is_out_of_frame(data, x0, y0):
-    x, y, dx, dy = return_view_xy(data)
-    xp, yp = pixel_2_array(x0, y0, x, y, dx, dy)
+def is_out_of_frame(data, xp, yp):
     if (xp >= data.shape[0]) or (xp < 0) or (yp >= data.shape[1]) or (yp < 0):
         return True
     else:
