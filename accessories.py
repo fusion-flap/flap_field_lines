@@ -88,6 +88,13 @@ def is_out_of_frame(data, xp, yp):
     else:
         return False
     
+def unique_list(lst):
+    u_list = []
+    for x in list:
+        if x not in u_list:
+            u_list.append(x)
+    return u_list
+
 def plot_corr(fig, 
               ax, 
               data, 
