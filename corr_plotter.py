@@ -137,8 +137,9 @@ class CorrPlotter:
         x, y, dx, dy = acc.return_view_xy(self.data)
         xp, yp = acc.pixel_2_array(surf[0, :],surf[1, :], x, y, dx, dy)
         pol = [p for i, j, p in zip(xp, yp, range(len(xp))) if not acc.is_out_of_frame(self.data, i, j)]
-        xp = [[i, j] for i, j in zip(xp, yp) if not acc.is_out_of_frame(self.data, i, j)]
-        xp = acc.unique_list(xp)
+        x_all = [[i, j] for i, j in zip(xp, yp) if not acc.is_out_of_frame(self.data, i, j)]
+        xp = acc.unique_list(x_all)
+        pol = remove_duplicates(xp, x_all, pol)
         yp = np.array(xp)[:,1]
         xp = np.array(xp)[:,0]
         return xp, yp, pol
@@ -214,3 +215,9 @@ class CorrPlotter:
                 acc.plot_ref_line(axes.ravel()[2], self.lines, ref_pol[i], tor_r_pro, color_ref)
                 pdf.savefig()
                 plt.close()
+
+def remove_duplicates(xp, x_all, pol):
+    p = []
+    for x in xp:
+        p.append(pol[x_all.index(xp)])
+    return p
