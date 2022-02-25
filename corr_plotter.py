@@ -214,7 +214,7 @@ class CorrPlotter:
                 acc.plot_ref_line(axes.ravel()[2], self.lines, ref_pol[i], tor_r_pro, color_ref)
 
                 xp, yp, pp = self.calc_surf_contour(self.data.info['surface'], int(ref_tor[i]))
-                ax = axes.ravel(3)
+                ax = axes.ravel()[3]
                 ax.set_xlabel('Poloidal coordinate (deg)', size='small')
                 ax.set_ylabel(r'Time lag ($\mu$s)', size='small')
                 ax.tick_params(axis='both', labelsize='small')
