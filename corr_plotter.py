@@ -131,6 +131,18 @@ class CorrPlotter:
         axes[0,0].set_ylim(y[0], y[-1])
         axes[0,0].set_xlim(x[0], x[-1])
         return fig, axes
+    
+    def calc_surf_contour(self, surf, tor):
+        _, surf = acc.get_surfs(surf, tor, 'both', self.data.info['view'], self.data.info['config'])
+        x, y, dx, dy = acc.return_view_xy(self.data)
+        xp, yp = acc.pixel_2_array(surf[0, :],surf[1, :], x, y, dx, dy)
+        pol = [p for i, j, p in zip(xp, yp, range(len(xp))) if not acc.is_out_of_frame(self.data, i, j)]
+        xp = [[i, j] for i, j in zip(xp, yp) if not acc.is_out_of_frame(self.data, i, j)]
+        xp = acc.unique_list(xp)
+        yp = np.array(xp)[:,1]
+        xp = np.array(xp)[:,0]
+        return xp, yp, pol
+        
 
     def make_slides_t_lag(self,
                       pol_r, 
