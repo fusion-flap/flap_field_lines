@@ -219,5 +219,5 @@ class CorrPlotter:
 def remove_duplicates(xp, x_all, pol):
     p = []
     for x in xp:
-        p.append(pol[x_all.index(xp)])
+        p.append(pol[x_all.index(x)])
     return p
