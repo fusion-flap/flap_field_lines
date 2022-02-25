@@ -194,14 +194,13 @@ class CorrPlotter:
                                   x, 
                                   y)
                     acc.plot_ref_line(axes.ravel()[j], self.lines, ref_pol[i], tor_r_pro, color_ref)
-                
                 max_v = np.amax(self.data.data[:,:,:,i], axis=2)
                 acc.plot_corr(fig, 
                               axes.ravel()[2], 
                               max_v, 
                               -corr_v, 
                               corr_v, 
-                              'XCorr Max', 
+                              'XCorr Max (a.u.)', 
                               self.lines[0, ref_pol[i], ref_tor[i]], 
                               self.lines[1, ref_pol[i], ref_tor[i]], 
                               self.lines[:, pol_r, :], 
@@ -213,6 +212,15 @@ class CorrPlotter:
                               x, 
                               y)
                 acc.plot_ref_line(axes.ravel()[2], self.lines, ref_pol[i], tor_r_pro, color_ref)
+
+                xp, yp, pp = self.calc_surf_contour(self.data.info['surface'], ref_tor[i])
+                ax = axes.ravel(3)
+                ax.set_xlabel('Poloidal coordinate (deg)', size='small')
+                ax.set_ylabel(r'Time lag ($\mu$s)', size='small')
+                ax.tick_params(axis='both', labelsize='small')
+                ax.set_title(title + 'CCF Max time lag on reference surface', size='small')
+                ax.plot(pp, max_p[xp, yp], 'r*')
+                ax.plot(ref_pol[i], t[int(np.floor(len(t)) / 2)], 'b*')
                 pdf.savefig()
                 plt.close()
 
