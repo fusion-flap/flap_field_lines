@@ -77,10 +77,10 @@ class CorrPlotter:
         with PdfPages(savefile) as pdf:
             for i in range(len(ref_tor)): 
                 mid_p = int(np.floor(self.data.shape[2]) / 2)
-                fig, axes = self.make_slide_layout(x, y)
+                fig, axes = self.make_page_layout(x, y)
                 fig.suptitle(f'Field Line: {ref_pol[i]}')
-                t_lags = [-4, -2, 0, 4]
-                for j in range(4):
+                t_lags = [-4, -3, -2, -1, 0, 4]
+                for j in range(6):
                     t_j = t_lags[j]
                     acc.plot_corr(fig, 
                                   axes.ravel()[j], 
@@ -101,10 +101,10 @@ class CorrPlotter:
                     acc.plot_ref_line(axes.ravel()[j], self.lines, ref_pol[i], tor_r_pro, color_ref)
                 pdf.savefig()
                 plt.close()
-                fig, axes = self.make_slide_layout(x, y)
+                fig, axes = self.make_page_layout(x, y)
                 fig.suptitle(f'Field Line: {ref_pol[i]}')
-                t_lags = [-4, 0, 2, 4]
-                for j in range(4):
+                t_lags = [-4, 0, 1, 2, 3, 4]
+                for j in range(6):
                     t_j = t_lags[j]
                     acc.plot_corr(fig, 
                                   axes.ravel()[j], 
@@ -126,6 +126,13 @@ class CorrPlotter:
                 pdf.savefig()
                 plt.close()
 
+    def make_page_layout(self, x, y):
+        fig, axes = plt.subplots(3,2, sharex=True, sharey=True, constrained_layout=True)
+        fig.set_size_inches(8.25, 11.75)
+        axes[0,0].set_ylim(y[0], y[-1])
+        axes[0,0].set_xlim(x[0], x[-1])
+        return fig, axes
+    
     def make_slide_layout(self, x, y):
         fig, axes = plt.subplots(2,2, sharex=False, sharey=False, constrained_layout=True)
         fig.set_size_inches(10.08, 7.56)
