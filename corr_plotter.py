@@ -127,7 +127,7 @@ class CorrPlotter:
                 plt.close()
 
     def make_slide_layout(self, x, y):
-        fig, axes = plt.subplots(2,2, sharex=False, sharey=False)
+        fig, axes = plt.subplots(2,2, sharex=False, sharey=False, constrained_layout=True)
         fig.set_size_inches(10.08, 7.56)
         axes[0,0].set_ylim(y[0], y[-1])
         axes[0,0].set_xlim(x[0], x[-1])
