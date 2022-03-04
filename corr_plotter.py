@@ -11,6 +11,7 @@ import pickle
 import os
 from typing import Protocol
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from scipy.integrate import trapz
@@ -154,7 +155,8 @@ class CorrPlotter:
                       tor_r, 
                       corr_v = 1, 
                       color_line = 'k', 
-                      color_ref = 'r'):
+                      color_ref = 'r',
+                      grey_scale = 0.33):
 
         savefile = self.save_path + '/ ' + self.save_title + '_t_lag.pdf'
 
@@ -181,6 +183,12 @@ class CorrPlotter:
                 t_lags = [3, 7]
                 for j in range(2):
                     t_j = t_lags[j]
+                    newmap = mpl.cm.get_cmap('bwr', t_j * 2 + 1)
+                    newmap = np.vstack(([grey_scale, grey_scale, grey_scale, 1], 
+                                         newmap(range(t_j * 2 + 1)), 
+                                         [grey_scale, grey_scale, grey_scale, 1]))
+                    newmap = mpl.colors.ListedColormap(newmap, 'bwr_cut')
+
                     acc.plot_corr(fig, 
                                   axes.ravel()[j], 
                                   max_p, 
@@ -196,7 +204,8 @@ class CorrPlotter:
                                   title + ', CCF Max Offset', 
                                   self.surfs, 
                                   x, 
-                                  y)
+                                  y,
+                                  newmap)
                     acc.plot_ref_line(axes.ravel()[j], self.lines, ref_pol[i], tor_r_pro, color_ref)
                 max_v = np.amax(self.data.data[:,:,:,i], axis=2)
                 acc.plot_corr(fig, 
