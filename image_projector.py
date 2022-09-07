@@ -98,7 +98,8 @@ class ImageProjector:
         Alternate constructor that reads precalibrated parameters from 
         a text file of specific format.
         """
-        view = 'W7X-' + view.upper()
+        if "AEQ" in view.upper() and not "W7X-" in view.upper():
+            view = 'W7X-' + view.upper()
 
         with open(file, 'r') as f:
             line = f.readline()
