@@ -80,6 +80,10 @@ class TestLoadingData(unittest.TestCase):
         These tests check the reading of field lines in various directions.
         """
         self.handler.update_read_parameters(surfaces=30, lines=self.lines,
+                                            direction='both')
+        self.handler.load_data()
+        self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 7302))
+        self.handler.update_read_parameters(surfaces=30, lines=self.lines,
                                             tor_range=self.tor_range, direction='backward')
         self.handler.load_data()
         self.assertEqual(self.handler.return_field_lines().shape, (3, 4, 10))

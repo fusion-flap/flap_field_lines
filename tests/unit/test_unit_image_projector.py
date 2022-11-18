@@ -294,8 +294,7 @@ class TestProjectionUpdate(unittest.TestCase):
         """
         This test checks if enhancement, rotation and translation works well.
         """        
-        view = ImageProjector.from_file('aeq31', '20160218', 'edicam', 
-                                        'views2.txt')
+        view = ImageProjector.from_file('aeq31', '20160218', 'edicam')
         
         view.update_projection(self.enh, self.alpha, 
                                self.offset[0, 0], self.offset[1, 0])
@@ -341,6 +340,19 @@ class TestProjectionUpdate(unittest.TestCase):
         self.assertAlmostEqual(float(np.arccos(v1.T @ v2 / 
                         (np.linalg.norm(v1) * np.linalg.norm(v2)))), 
                         self.alpha, msg="Rotation doesn't work properly.")
+
+    def test_transposition(self):
+        """
+        This est checks if ImageProjector.transpose() works as intended, by 
+        comparing transposed points to reference points.
+        """
+        view = ImageProjector.from_file('aeq31', '20160218', 'edicam', True)
+        
+        points_2 = view.calc_pixel_coord(self.points)
+
+        self.assertTrue(np.allclose(points_2, self.points_ref[::-1, :]), 
+                                    msg="Transposition error.")
+        
 
 
 if __name__ == '__main__':

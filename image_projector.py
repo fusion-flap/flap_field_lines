@@ -9,6 +9,7 @@ to image coordinates for various fast cameras used in fusion devices.
 (including EDICAM and Photron HDF5)
 """
 
+from operator import ne
 import os
 import numpy as np
 
@@ -40,8 +41,9 @@ class ImageProjector:
                  viewpoint=None, 
                  shot=None, 
                  cam=None, 
-                 imsize=[1280, 1024], 
-                 old = True):
+                 imsize=[1280, 1024],
+                 old=True
+                 ):
         """
         Default constructor.
         R0, theta0, z0: The coordinates of the viewpoint in cylindrical
@@ -82,8 +84,16 @@ class ImageProjector:
         else:
             self.__set_up_projection(enh, alpha, xoff, yoff)
     
+    def __str__(self) -> str:
+        return self.viewpoint + ', ' + self.shot + ', ' + self.cam
+    
     @classmethod
-    def from_file(cls, view, shot, cam, file=None):
+    def from_file(cls, 
+                  view, 
+                  shot, 
+                  cam, 
+                  transpose=False, 
+                  file=os.path.join(os.path.dirname(__file__), 'views2.txt')):
         """
         Alternate constructor that reads precalibrated parameters from 
         a text file of specific format.
@@ -91,8 +101,6 @@ class ImageProjector:
         if "AEQ" in view.upper() and not "W7X-" in view.upper():
             view = 'W7X-' + view.upper()
 
-        if not file:
-            file = os.path.join(os.path.dirname(__file__), 'views2.txt')
         with open(file, 'r') as f:
             line = f.readline()
             is_view_valid = False
@@ -124,7 +132,10 @@ class ImageProjector:
                         xoff = float(line[8].split(':')[1])
                         yoff = float(line[9].split(':')[1])
                         imsize = [int(line[13].split('[')[1]), int(line[14].split(']')[0])]
-                        return cls(R0, theta0, z0, Rp, thetap, zp, enh, alpha, xoff, yoff, view, shot, cam, imsize)
+                        new_view =  cls(R0, theta0, z0, Rp, thetap, zp, enh, alpha, xoff, yoff, view, shot, cam, imsize)
+                        if transpose:
+                            new_view.transpose()
+                        return new_view
                 line = f.readline()
 
         raise ValueError('Parameters were not found.\n')     
@@ -233,6 +244,11 @@ class ImageProjector:
         self.__offset = R @ (self.__offset - origo) + origo
 
         self.__offset += np.array([[xoff], [yoff]])
+
+    def transpose(self):
+        T = np.array([[0, 1], [1, 0]])
+        self.__offset = T @ self.__offset
+        self.__projector_matrix = T @ self.__projector_matrix
 
     def project_points(self, points):
         """
