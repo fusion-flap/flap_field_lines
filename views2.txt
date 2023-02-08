@@ -5,6 +5,7 @@ W7X-AEQ40
 W7X-AEQ41
 W7X-AEQ50
 W7X-AEQ51
+W7X-AEA21
 !!!
 W7X-AEQ20
 shot: 20160308
@@ -152,6 +153,13 @@ W7X-AEQ51
 shot: 20150713
 cam: pixelfly
 struct={R0:6.41221, z0:0.665888, theta0:-1.22500, Rp:5.00000, zp:0.480000, thetap:-0.240000, l0:2.20000, gamma:0.0300000, xoffset:-2.39000, yoffset:12.3700, half: -1, xmirror: 0, ymirror: 0, imsize: [1392,1024]}
+@
+#
+!!!
+W7X-AEA21
+shot: 20221207
+cam: phot
+struct={R0:6.45197, z0:-0.38972, theta0:1.27347, Rp:6.12923, zp:0.13073, thetap:0.84650, l0:0.58378, gamma:1.59939, xoffset:0.56433, yoffset:0.27098, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
 @
 #
 !!!
