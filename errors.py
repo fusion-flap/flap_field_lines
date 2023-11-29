@@ -10,7 +10,7 @@ class NoSurfaceFileError(Exception):
 
 class NoFsInfoError(Exception):
     def __init__(self):
-        self.message = 'fs_info is not found at default location!'
+        self.message = 'fs_info is not found at expected location!'
         super().__init__(self.message)
 
 class WrongConfigurationError(Exception):
