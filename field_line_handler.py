@@ -50,22 +50,23 @@ class FieldLineHandler:
             #default path
             self.path = '/data/W7-X/processed_data/flux_surfaces/%s+252_detailed_w_o_limiters_w_o_torsion'
             if configuration in self.__valid_configs:
-                self.path = self.path % configuration 
-                #default path for fs_info.sav
-                path = self.path + '/fs_info.sav'
-                #Raise error if not found
-                if not os.path.isfile(path):
+                path = self.path = self.path % configuration 
+                #default path for fs_info.sav. Raise error if not found
+                if not os.path.isfile(path + '/fs_info.sav'):
                     raise NoFsInfoError
             else:
                 raise WrongConfigurationError(configuration)
         else:
             #if path for fs_info was give, set path for its root folder
-            self.path = os.path.dirname(path)
+            self.path = path
             #if self.path/field_lines exists, it is used as default
         if os.path.exists(os.path.join(self.path, 'field_lines')):
             self.path = os.path.join(self.path, 'field_lines')
+        if os.path.isfile(os.path.join(path, 'fs_info.sav')):
+            self.__fs_info = self.__read_fs_info(os.path.join(path, 'fs_info.sav'))
+        else:
+            self.__fs_info = None
         self.configuration = configuration
-        self.__fs_info = self.__read_fs_info(path)
         self.__field_lines = None
         self.__B = None
         self.__gradB = None
