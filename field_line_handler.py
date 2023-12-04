@@ -7,6 +7,7 @@ Created on Tue May 31 2021
 
 import numpy as np
 import os
+import glob
 
 from scipy.io import readsav
 
@@ -66,6 +67,8 @@ class FieldLineHandler:
             self.__fs_info = self.__read_fs_info(os.path.join(path, 'fs_info.sav'))
         else:
             self.__fs_info = None
+        if len(glob.glob(self.path + '/*field_line*')) == 0:
+            raise FileNotFoundError
         self.configuration = configuration
         self.__field_lines = None
         self.__B = None
