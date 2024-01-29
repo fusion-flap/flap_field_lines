@@ -162,4 +162,9 @@ cam: phot
 struct={R0:6.45197, z0:-0.38972, theta0:1.27347, Rp:6.12923, zp:0.84650, thetap:0.13073, l0:0.58378, gamma:1.59939, xoffset:0.56433, yoffset:0.27098, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
 @
 #
+shot: 20230119.036
+cam: phot
+struct={R0:6.36105, z0:-0.496000, theta0:1.26451, Rp:5.86000, zp:-0.280000, thetap:1.12000, l0:3.75000, gamma:1.62000, xoffset:17.1900, yoffset:2.15000, half: -1, xmirror: 0, ymirror: 0, imsize: [1024,1024]}
+@
+#
 !!!
