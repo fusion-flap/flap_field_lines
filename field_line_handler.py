@@ -92,10 +92,19 @@ class FieldLineHandler:
         needed_info = {}
         needed_info['iota'] = fs_info['fs_info'][0][3]
         needed_info['reff'] = fs_info['fs_info'][0][4]
-        needed_info['separatrix'] = fs_info['fs_info'][0][6]
-        needed_info['names'] = fs_info['fs_info'][0][7]
-        needed_info['names'][0] = b'main plasma'
-        needed_info['flags'] = fs_info['fs_info'][0][8]
+        try:
+            needed_info['separatrix'] = fs_info['fs_info'][0][6]
+        except (IndexError):
+            print('No separatrix data found in fs_info.sav')
+        try:
+            needed_info['names'] = fs_info['fs_info'][0][7]
+            needed_info['names'][0] = b'main plasma'
+        except (IndexError):
+            print('No plasma body names found in fs_info.sav')
+        try:
+            needed_info['flags'] = fs_info['fs_info'][0][8]
+        except (IndexError):
+            print('No island flags found in fs_info.sav')
         return needed_info
 
     def update_read_parameters(self, 
