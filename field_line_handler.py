@@ -70,6 +70,10 @@ class FieldLineHandler:
         if len(glob.glob(self.path + '/*field_line*')) == 0:
             raise FileNotFoundError
         self.configuration = configuration
+        if self.configuration == 'DBM':
+            self.file_pos = 0
+        else:
+            self.file_pos = 4
         self.__field_lines = None
         self.__B = None
         self.__gradB = None
@@ -316,15 +320,15 @@ class FieldLineHandler:
         for file in self.surface_files[index+1:]:
             surf = readsav(file)
 
-            new = self.__extract_data_from_surf(surf, 4)
+            new = self.__extract_data_from_surf(surf, self.file_pos)
             field_lines = np.concatenate((field_lines, 
                                           new[..., np.newaxis]), 
                                           axis=-1)
             if get_B:
-                new = self.__extract_data_from_surf(surf, 10)
+                new = self.__extract_data_from_surf(surf, self.file_pos + 6)
                 B = np.concatenate((B, new[..., np.newaxis]), axis=-1)
             if get_gradB:
-                new = self.__extract_data_from_surf(surf, 16)
+                new = self.__extract_data_from_surf(surf, self.file_pos + 12)
                 gradB = np.concatenate((gradB, new[..., np.newaxis]), axis=-1)
 
         return field_lines, B, gradB
