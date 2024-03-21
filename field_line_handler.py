@@ -296,15 +296,15 @@ class FieldLineHandler:
             else:
                 self.tor_range = range(len(surf['surface'][0][4][0]))
 
-        field_lines = self.__extract_data_from_surf(surf, 4)
+        field_lines = self.__extract_data_from_surf(surf, self.file_pos)
 
         if get_B:
-            B = self.__extract_data_from_surf(surf, 10)
+            B = self.__extract_data_from_surf(surf, self.file_pos + 6)
         else:
             B = None
 
         if get_gradB:
-            gradB = self.__extract_data_from_surf(surf, 16)
+            gradB = self.__extract_data_from_surf(surf, self.file_pos + 12)
         else:
             gradB = None
         
